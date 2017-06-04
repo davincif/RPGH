@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<all>
+	<game>
+		<name>jogo1</name>
+		<last_play>
+			<day>01</day>
+			<month>02</month>
+			<year>2017</year>
+			<time>12:30</time>
+		</last_play>
+	</game>
+	<game>
+		<name>jogo2</name>
+		<last_play>
+			<day>05</day>
+			<month>09</month>
+			<year>2016</year>
+			<time>05:35</time>
+		</last_play>
+	</game>
+	<game>
+		<name>jogo3</name>
+		<last_play>
+			<day>15</day>
+			<month>12</month>
+			<year>2015</year>
+			<time>01:47</time>
+		</last_play>
+		</game>
+</all>
