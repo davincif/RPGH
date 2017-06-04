@@ -8,7 +8,7 @@ from gi.repository import Gtk
 
 #Internal Imports
 from mainWindow import MainWindow
-from winState import WinState
+from Enums import windowState
 
 
 def main():
@@ -16,6 +16,11 @@ def main():
 	if not os.path.isdir("games"):
 		print("There's no game directory")
 		os.makedirs("games")
+
+		#create game file
+		gf = open("games/games.xml", "w")
+		gf.write('<?xml version="1.0"?>\n<all>\n</all>\n')
+		gf.close()
 
 	#creating windows
 	mainwin = MainWindow()

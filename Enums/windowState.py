@@ -1,26 +1,26 @@
 from enum import Enum
 
 class WinState(Enum):
-	choose_game = 0
-	main_play = 1
+	CHOOSE_GAME = 0
+	MAIN_PLAY = 1
 
 	#OVERWRITE METHODS
 	def __str__(self):
-		if self.value == 0:
+		if self.value == self.CHOOSE_GAME:
 			back = "Choose Game"
-		elif self.value == 1:
+		elif self.value == self.MAIN_PLAY:
 			back = "Main Play"
 		else:
-			back = "Incorret state value"
+			back = "Incorret window state value"
 
 		return back
 
 	#COMMUM METHODS
 	def stantard_state(self):
-		return self.main_play
+		return self.MAIN_PLAY
 
 	def initial_state(self):
-		return self.choose_game
+		return self.CHOOSE_GAME
 
 	def describe(self):
 		return self.name, self.value
