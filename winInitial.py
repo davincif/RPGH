@@ -68,20 +68,31 @@ class WinInitial:
 			flowbox.add(grid)
 
 			#game name and last play time
-			title = Gtk.Label(elem.find("./name").text)
-			timedate = Gtk.Label("Last play time at " + elem.find("./last_play/time").text
-					+ " on " + elem.find("./last_play/day").text + "/" + elem.find("./last_play/month").text
-					+ "/" + elem.find("./last_play/year").text)
+			title = Gtk.Label()
+			title.set_markup("<big><b>"+elem.find("./name").text+"</b></big>")
+			title.set_line_wrap(True)
+			title.set_xalign(0.5)
+			
+			aux = elem.find("./last_play/day").text + "/" + elem.find("./last_play/month").text
+			aux += "/" + elem.find("./last_play/year").text
+			aux += " at " + elem.find("./last_play/time").text
+			aux = "<i>" + aux + "</i>"
+			timedate = Gtk.Label()
+			timedate.set_markup(aux)
+			timedate.set_xalign(1)
+			# timedate.set_line_wrap(True)
+			# timedate.set_justify(Gtk.Justification.LEFT)
+			# timedate.props.justify = Gtk.Justification.LEFT
 
 			#load and delete bottuns
 			loadbutton = Gtk.Button(label="Load")
 			delbutton = Gtk.Button(label="Delete")
 
 			#add in the grid
-			grid.attach(title, left=0, top=0, width=4, height=1)
-			grid.attach(timedate, left=0, top=1, width=2, height=1)
-			grid.attach(loadbutton, left=2, top=2, width=1, height=1)
-			grid.attach(delbutton, left=3, top=2, width=1, height=1)
+			grid.attach(title, left=0, top=0, width=8, height=1)
+			grid.attach(timedate, left=4, top=1, width=4, height=1)
+			grid.attach(loadbutton, left=0, top=2, width=1, height=1)
+			grid.attach(delbutton, left=7, top=2, width=1, height=1)
 			flowbox.add(Gtk.HSeparator())
 
 		#final packing
@@ -95,13 +106,13 @@ class WinInitial:
 		width = window.gdk_screen.get_width()*0.2
 		height = window.gdk_screen.get_height()
 
-		if width < 250:
+		if width > 250:
 			width = 250
 
 		if self.gAmount == 0:
 			height = 200
 		else:
-			aux = self.gAmount*108 + 50
+			aux = self.gAmount*110 + 50
 			if aux > height*0.8:
 				height *= 0.8
 			else:
