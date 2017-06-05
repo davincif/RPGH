@@ -13,8 +13,12 @@ from popUpMsg import PopUpMsg
 
 
 class WinInitial:
-	#window - the windows to be added on screen by the mainWindow
-	#self.gAmount - game Amount
+	window = None #the windows to be added on screen by the mainWindow
+	gAmount = None #game Amount
+	ngwindow = None #new game window
+	ngw_vbox = None #vertical box of the ngwindow
+	ngw_vbox_el = None #ngw_vbox error label
+	xmlfile = None #the file that contains games direcotory
 
 	def __init__(self, window):
 		self.window = window
@@ -41,8 +45,8 @@ class WinInitial:
 		flowbox.set_activate_on_single_click(False)
 
 		#get the root in xml
-		xmlfile = ET.parse("games/games.xml")
-		groot = xmlfile.getroot() #game root
+		self.xmlfile = ET.parse("games/games.xml")
+		groot = self.xmlfile.getroot() #game root
 
 		#check consistency
 		advised = False
@@ -56,9 +60,9 @@ class WinInitial:
 					popup.pop_it_up(title="Game Missing!",
 							text="some game folder was erased or moved from the RPGHelper's games folder",
 							msgtype=MsgType.ERROR)
-				# groot.remove(elem)
+				groot.remove(elem)
 		if advised:
-			xmlfile.write("games/tt.xml")
+			self.xmlfile.write("games/games.xml")
 
 		#create one option for eatch game
 		games = groot.findall("game")
@@ -80,9 +84,6 @@ class WinInitial:
 			timedate = Gtk.Label()
 			timedate.set_markup(aux)
 			timedate.set_xalign(1)
-			# timedate.set_line_wrap(True)
-			# timedate.set_justify(Gtk.Justification.LEFT)
-			# timedate.props.justify = Gtk.Justification.LEFT
 
 			#load and delete bottuns
 			loadbutton = Gtk.Button(label="Load")
@@ -98,6 +99,7 @@ class WinInitial:
 		#final packing
 		gbox.pack_start(scrolled, expand=True, fill=True, padding=0)
 		newgame_button = Gtk.Button(label="New Game")
+		newgame_button.connect("clicked", self.create_new_game)
 		gbox.pack_start(newgame_button, expand=False, fill=False, padding=0)
 		self.window.add(gbox)
 
@@ -110,7 +112,7 @@ class WinInitial:
 			width = 250
 
 		if self.gAmount == 0:
-			height = 200
+			height = 100
 		else:
 			aux = self.gAmount*110 + 50
 			if aux > height*0.8:
@@ -120,3 +122,72 @@ class WinInitial:
 
 		window.set_default_size(int(width), int(height))
 		window.set_resizable(False)
+
+	def create_new_game(self, widget):
+		#setting window
+		self.ngwindow = Gtk.Window(title="Create New Game")
+		self.ngwindow.set_attached_to(self.window)
+		self.ngwindow.set_modal(True)
+
+		#the window content
+		self.ngw_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+		self.ngwindow.add(self.ngw_vbox)
+
+		#input
+		self.game_name = Gtk.Entry()
+		self.game_name.set_text("My Game")
+		self.ngw_vbox.add(self.game_name)
+
+		#ok / cancel buttons
+		hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+		hbox.set_halign(Gtk.Align.CENTER)
+
+		ok_button = Gtk.Button(label="OK", stock=Gtk.STOCK_OK)
+		ok_button.connect("clicked", self.set_new_game)
+		hbox.add(ok_button)
+		
+		cancel_button = Gtk.Button(stock=Gtk.STOCK_CANCEL)
+		cancel_button.connect("clicked", self.cancel_callback)
+		hbox.add(cancel_button)
+
+		self.ngw_vbox.add(hbox)
+
+		#show
+		self.ngwindow.show_all()
+
+	def cancel_callback(self, widget):
+		self.ngwindow.destroy()
+		self.ngwindow = None
+		# window.emit("delete-event", gtk.gdk.Event(gtk.gdk.DELETE))
+
+	def set_new_game(self, widget):
+		path = self.game_name.get_text()
+		if os.path.isdir("games/" + path):
+			#name already in use, show error
+			print("'" + path + "' game already exit")
+
+			if self.ngw_vbox_el is None:
+				self.ngw_vbox_el = Gtk.Label()
+				aux = "This game already exist"
+				aux = "<span background='#ff4d4d'>" + aux + "</span>"
+				self.ngw_vbox_el.set_markup(aux)
+				self.ngw_vbox.add(self.ngw_vbox_el)
+
+			self.ngw_vbox_el.props.visible = True
+		else:
+			#create the game's directory
+			# os.makedirs(path)
+
+			day = "01"
+			month = "10"
+			year = "2019"
+			time = "01:50"
+			aux = "<game>\n\t\t<name>{0}</name>\n\t\t<last_play>\n\t\t\t<day>{1}</day>\n\t\t\t<month>{2}</month>\n\t\t\t<year>{3}</year>\n\t\t\t<time>{4}</time>\n\t</last_play>\n</game>\n"
+			aux.format(path, day, month, year, time)
+			new_element = ET.fromstring(aux)
+			root = self.xmlfile.getroot()
+			root.append(new_element)
+			self.xmlfile.write("games/games.xml")
+
+			#destroy the dialog
+			self.cancel_callback(widget)
