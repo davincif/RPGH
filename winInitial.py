@@ -41,13 +41,6 @@ class WinInitial:
 		#general box
 		gbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
 
-		#the box to hold all game options
-		self.flowbox = Gtk.FlowBox() #it'll be add to a ScrolledWindow later
-		self.flowbox.set_valign(Gtk.Align.START)
-		self.flowbox.set_max_children_per_line(1)
-		self.flowbox.set_selection_mode(Gtk.SelectionMode.NONE)
-		self.flowbox.set_activate_on_single_click(False)
-
 		#get the root in xml
 		self.xmlfile = ET.parse("games/games.xml")
 		groot = self.xmlfile.getroot() #game root
@@ -56,7 +49,6 @@ class WinInitial:
 		advised = False
 		games = groot.findall("game")
 		for elem in games:
-			# if not os.path.isdir("'games/" + elem.find("name").text + "'"):
 			if not os.path.isdir("games/" + elem.find("name").text):
 				#game folder don't exist!
 				if not advised:
@@ -69,6 +61,7 @@ class WinInitial:
 		if advised:
 			self.xmlfile.write("games/games.xml")
 
+		#create the game menu window
 		self.refresh_game_menu()
 
 		#final packing
@@ -91,6 +84,7 @@ class WinInitial:
 		self.ngwindow = Gtk.Window(title="Create New Game")
 		self.ngwindow.set_attached_to(self.window)
 		self.ngwindow.set_modal(True)
+		self.ngwindow.set_resizable(False)
 
 		#the window content
 		self.ngw_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
@@ -143,11 +137,16 @@ class WinInitial:
 		else:
 			self.scrolled.remove(self.scrolled.get_child())
 
-		self.scrolled.add_with_viewport(self.flowbox)
+		#the box to hold all game options
+		if self.flowbox is not None:
+			self.flowbox.destroy()
+		self.flowbox = Gtk.FlowBox() #it'll be add to a ScrolledWindow later
+		self.flowbox.set_valign(Gtk.Align.START)
+		self.flowbox.set_max_children_per_line(1)
+		self.flowbox.set_selection_mode(Gtk.SelectionMode.NONE)
+		self.flowbox.set_activate_on_single_click(False)
 
-		# self.scrolled = Gtk.ScrolledWindow()
-		# self.scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-		# self.scrolled.add_with_viewport(self.flowbox)
+		self.scrolled.add_with_viewport(self.flowbox)
 
 		#create one option for eatch game
 		games = self.xmlfile.getroot().findall("game")
@@ -173,7 +172,7 @@ class WinInitial:
 			#load and delete bottuns
 			loadbutton = Gtk.Button(label="Load")
 			delbutton = Gtk.Button(label="Delete")
-			delbutton.connect("clicked", self.delete_game)
+			delbutton.connect("clicked", self.delete_game, elem.find("./name"))
 
 			#add in the grid
 			grid.attach(title, left=0, top=0, width=8, height=1)
@@ -242,4 +241,28 @@ class WinInitial:
 		# do what's needed to delete the game in the path 'game_name'
 		# and then remove its folder and entry inthe xml file
 		###
-		pass
+
+		#remove from xml file
+		groot = self.xmlfile.getroot()
+		games = groot.findall("game")
+		for elem in games:
+			if elem.find("name") == game_name:
+				#missing a confirmation popUp
+				groot.remove(elem)
+				self.xmlfile.write("games/games.xml")
+				break
+
+		#remove the directory
+		## Delete everything reachable from the directory named in "top",
+		## assuming there are no symbolic links.
+		## CAUTION:  This is dangerous!  For example, if top == '/', it
+		## could delete all your disk files.
+		for root, dirs, files in os.walk("games/" + game_name.text, topdown=False):
+			for name in files:
+				os.remove(root + name)
+			for name in dirs:
+				os.rmdir(root + name)
+		os.rmdir("games/" + game_name.text)
+
+		#update the game menu window
+		self.refresh_game_menu()
