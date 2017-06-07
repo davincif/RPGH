@@ -1,5 +1,9 @@
 #Standard Python Imports
 import os
+import sys
+if not (sys.version_info > (3, 0)):
+	#wrong python interpreter
+	print("PYTHON 3 REQUIRED\nRPGHelper will probably not work")
 
 #Added Python Libraries
 import gi
