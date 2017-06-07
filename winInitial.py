@@ -9,6 +9,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
 #Internal Imports
+from Enums import WinState
 from Enums import MsgType
 from popUpMsg import PopUpMsg
 
@@ -171,6 +172,7 @@ class WinInitial:
 
 			#load and delete bottuns
 			loadbutton = Gtk.Button(label="Load")
+			loadbutton.connect("clicked", self.load_game)
 			delbutton = Gtk.Button(label="Delete")
 			delbutton.connect("clicked", self.delete_game, elem.find("./name"))
 
@@ -266,3 +268,8 @@ class WinInitial:
 
 		#update the game menu window
 		self.refresh_game_menu()
+
+	def load_game(self, widget):
+		#go to another window state
+		self.window.state = self.window.state.MAIN_PLAY
+		self.window.buildWindow()

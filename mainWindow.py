@@ -33,6 +33,13 @@ class MainWindow(Gtk.Window):
 
 	def buildWindow(self):
 		if self.state == WinState.MAIN_PLAY:
+			print("AQUI")
+			#check if is empty
+			children = self.get_children()
+			print(children)
+			if children is not None:
+				self.remove(children)
+
 			self.notebook = Gtk.Notebook()
 			self.add(self.notebook)
 
