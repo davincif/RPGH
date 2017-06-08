@@ -1,0 +1,1 @@
+from RPGSystems.Enums.type import RSType

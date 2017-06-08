@@ -12,6 +12,7 @@ from gi.repository import Gtk, Gdk
 from Enums import WinState
 from Enums import MsgType
 from popUpMsg import PopUpMsg
+from RPGSystems.Enums.type import RSType
 
 
 class WinInitial:
@@ -25,6 +26,7 @@ class WinInitial:
 	header = None #header
 	flowbox = None #where the games are organized
 	scrolled = None #an ScrolledWindow, only can erase child by it
+	check_boxes = {} #hold the buttons with the possible RPG system to play
 
 	#data
 	gAmount = None #game Amount
@@ -91,10 +93,18 @@ class WinInitial:
 		self.ngw_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
 		self.ngwindow.add(self.ngw_vbox)
 
-		#input
+		#input game name
 		self.game_name = Gtk.Entry()
 		self.game_name.set_text("My Game")
+		self.game_name.connect("changed", self.on_typing_in_entry)
 		self.ngw_vbox.add(self.game_name)
+
+		#input game system
+		for rpg_type in RSType:
+			self.check_boxes[rpg_type] = Gtk.CheckButton(rpg_type.get_fancy_name())
+			self.check_boxes[rpg_type].connect("toggled", self.on_RSTYPE_toggled)
+			self.ngw_vbox.add(self.check_boxes[rpg_type])
+		self.check_boxes[RSType.DND5].set_active(True)
 
 		#ok / cancel buttons
 		hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
@@ -203,33 +213,79 @@ class WinInitial:
 		#tells Gtk to redraw
 		self.scrolled.show_all()
 
+	def on_RSTYPE_toggled(self, widget):
+		if widget.get_active() == True:
+			for k, v in self.check_boxes.items():
+				if k.get_fancy_name() != widget.get_label():
+					v.set_active(False)
+		if self.ngw_vbox_el is not None and self.ngw_vbox_el.props.visible:
+			self.ngw_vbox_el.props.visible = False
+
+	def on_typing_in_entry(self, widget):
+		if self.ngw_vbox_el is not None and self.ngw_vbox_el.props.visible:
+			self.ngw_vbox_el.props.visible = False
+
 	#BACK END FUNCTIONS
 	def set_new_game(self, widget):
 		###
 		# it sets everything so to a new game may begin
 		###
 
-		path = self.game_name.get_text()
-		if os.path.isdir("games/" + path):
-			#name already in use, show error
-			print("'" + path + "' game already exit")
+		#find the rpg game system
+		rpg_system = None
+		for k, v in self.check_boxes.items():
+			if v.get_active() == True:
+				rpg_system = k.get_fancy_name()
 
+		#get the game name
+		path = self.game_name.get_text()
+
+		if rpg_system is None or os.path.isdir("games/" + path):
+			#create the label error
 			if self.ngw_vbox_el is None:
 				self.ngw_vbox_el = Gtk.Label()
-				aux = "This game already exist"
-				aux = "<span background='#ff4d4d'>" + aux + "</span>"
-				self.ngw_vbox_el.set_markup(aux)
 				self.ngw_vbox.add(self.ngw_vbox_el)
 
+			#show error
+			if os.path.isdir("games/" + path):
+				#game name already in use
+				print("'" + path + "' game already exit")
+				aux = "This game already exist"
+			elif rpg_system is None:
+				#No system selected
+				print("No RPG system selected")
+				aux = "Choose a RPG system to play"
+
+
+			#configure and show the error msg
+			aux = "<span background='#ff4d4d'>" + aux + "</span>"
+			self.ngw_vbox_el.set_markup(aux)
 			self.ngw_vbox_el.props.visible = True
 		else:
 			#create the game's directory
 			os.makedirs("games/" + path)
 
+			#correcting possible '&' caracters
+			aux = rpg_system
+			finder = aux.find("&")
+			while finder != -1:
+				rpg_system = aux[:finder] + "&amp;" + aux[finder+1:]
+				finder = aux[finder+5:].find("&")
+
+			#write the informations in the xmlfile
 			now = datetime.now()
 			time = str(now.hour) + ":" + str(now.minute)
-			aux = "<game>\n\t\t<name>{0}</name>\n\t\t<last_play>\n\t\t\t<day>{1}</day>\n\t\t\t<month>{2}</month>\n\t\t\t<year>{3}</year>\n\t\t\t<time>{4}</time>\n\t</last_play>\n</game>\n"
-			aux = aux.format(path, now.day, now.month, now.year, time)
+			aux = "<game>\n"
+			aux += "\t\t<name>{0}</name>\n"
+			aux += "\t\t<last_play>\n"
+			aux += "\t\t\t<day>{1}</day>\n"
+			aux += "\t\t\t<month>{2}</month>\n"
+			aux += "\t\t\t<year>{3}</year>\n"
+			aux += "\t\t\t<time>{4}</time>\n"
+			aux += "\t\t</last_play>\n"
+			aux += "\t\t<RPGSystem>{5}</RPGSystem>\n"
+			aux += "</game>\n" #apparently doesn't metter how much '\n' there is -.-'
+			aux = aux.format(path, now.day, now.month, now.year, time, rpg_system)
 			new_element = ET.fromstring(aux)
 			root = self.xmlfile.getroot()
 			root.append(new_element)
