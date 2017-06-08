@@ -50,6 +50,12 @@ class MainWindow(Gtk.Window):
 
 			#biuld the correct window
 			choose_game = WinInitial(self)
+		elif self.state == WinState.NEW_CHAR:
+			#clear windows if needed
+			self.clear()
+
+			#biuld the correct window
+			#
 		else:
 			pass
 

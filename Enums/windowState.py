@@ -3,6 +3,7 @@ from enum import Enum
 class WinState(Enum):
 	CHOOSE_GAME = 0
 	MAIN_PLAY = 1
+	NEW_CHAR = 2
 
 	#COMMUM METHODS
 	def stantard_state(self):
