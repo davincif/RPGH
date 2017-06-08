@@ -166,12 +166,17 @@ class WinInitial:
 			grid.set_row_spacing(10)
 			self.flowbox.add(grid)
 
-			#game name and last play time
+			#game name
 			title = Gtk.Label()
 			title.set_markup("<big><b>"+elem.find("./name").text+"</b></big>")
 			title.set_line_wrap(True)
 			title.set_xalign(0.5)
-			
+
+			#rpg system
+			rpg_system = Gtk.Label(elem.find("./RPGSystem").text)
+			rpg_system.set_xalign(0.5)
+
+			#last played time
 			aux = elem.find("./last_play/day").text + "/" + elem.find("./last_play/month").text
 			aux += "/" + elem.find("./last_play/year").text
 			aux += " at " + elem.find("./last_play/time").text
@@ -188,9 +193,10 @@ class WinInitial:
 
 			#add in the grid
 			grid.attach(title, left=0, top=0, width=8, height=1)
-			grid.attach(timedate, left=4, top=1, width=4, height=1)
-			grid.attach(loadbutton, left=0, top=2, width=1, height=1)
-			grid.attach(delbutton, left=7, top=2, width=1, height=1)
+			grid.attach(rpg_system, left=0, top=1, width=8, height=1)
+			grid.attach(timedate, left=4, top=2, width=4, height=1)
+			grid.attach(loadbutton, left=0, top=3, width=1, height=1)
+			grid.attach(delbutton, left=7, top=3, width=1, height=1)
 			self.flowbox.add(Gtk.HSeparator())
 
 		#correctly resizing
@@ -204,7 +210,7 @@ class WinInitial:
 		if self.gAmount == 0:
 			height = 130
 		else:
-			aux = self.gAmount*110 + 130
+			aux = self.gAmount*140 + 130
 			if aux < height:
 				height = aux
 

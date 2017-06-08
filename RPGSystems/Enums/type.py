@@ -10,4 +10,4 @@ class RSType(Enum):
 
 	def get_fancy_name(self):
 		if self == self.DND5:
-			return "D&D 5º edição"
+			return "D&D 5th edition"
