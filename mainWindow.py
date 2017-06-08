@@ -9,6 +9,7 @@ from gi.repository import Gtk, Gdk
 #Internal Imports
 from Enums import WinState
 from winInitial import WinInitial
+from mainGameWindow import MainGameWindow
 
 class MainWindow(Gtk.Window):
 	#notebook - the notebook to handle the "tabs"
@@ -32,29 +33,33 @@ class MainWindow(Gtk.Window):
 		self.buildWindow()
 
 	def buildWindow(self):
+		##
+		# Change the window according with the current state
+		##
+
 		if self.state == WinState.MAIN_PLAY:
-			print("AQUI")
-			#check if is empty
-			children = self.get_children()
-			print(children)
-			if children is not None:
-				self.remove(children)
+			#clear windows if needed
+			self.clear()
 
-			self.notebook = Gtk.Notebook()
-			self.add(self.notebook)
+			#biuld the correct window
+			MainGameWindow(self)
 
-			#Filed page
-			self.page_field = Gtk.Box()
-			self.page_field.set_border_width(10)
-			self.page_field.add(Gtk.Label("FIELD"))
-			self.notebook.append_page(self.page_field, Gtk.Label("Field"))
-
-			#Filed page
-			self.page_field = Gtk.Box()
-			self.page_field.set_border_width(10)
-			self.page_field.add(Gtk.Label("SHEETS"))
-			self.notebook.append_page(self.page_field, Gtk.Label("Sheets"))
 		elif self.state == WinState.CHOOSE_GAME:
+			#clear windows if needed
+			self.clear()
+
+			#biuld the correct window
 			choose_game = WinInitial(self)
 		else:
 			pass
+
+	def clear(self):
+		##
+		# clear all the window's child, if there's any.
+		##
+
+		children = self.get_children()
+		if children is not None:
+			for elem in children:
+				if type(elem) == Gtk.Box:
+					self.remove(elem)
