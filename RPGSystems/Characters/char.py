@@ -5,6 +5,7 @@
 from RPGSystems.Enums.race import Race
 from RPGSystems.Enums.classes import Classes
 from RPGSystems.Enums.personality import Personality
+from RPGSystems.coinBag import CoinBag
 
 
 class Char:
@@ -49,10 +50,14 @@ class Char:
 	#custom characteristics
 	age = None
 	height = None
-	widght = None
+	weight = None
+	carring_weight = 0
 
 	#personalities
 	personality = [Personality.NO_PERSONALITY, Personality.NO_PERSONALITY]
+
+	#money
+	coins = CoinBag()
 
 	#skills
 	skill = {"acrobatics": 0,
