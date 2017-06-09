@@ -46,6 +46,11 @@ class Char:
 	expirience = 0
 	level = 1
 
+	#custom characteristics
+	age = None
+	height = None
+	widght = None
+
 	#personalities
 	personality = [Personality.NO_PERSONALITY, Personality.NO_PERSONALITY]
 
