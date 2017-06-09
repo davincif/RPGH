@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class Classes(Enum):
-	__order__ = "Race is iterable"
+	__order__ = "Classes is iterable"
 
 	#race not recognized
 	NO_CLASS = -1

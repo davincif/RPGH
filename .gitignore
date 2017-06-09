@@ -2,3 +2,4 @@
 games/
 games/*
 *.pyc
+test.py
