@@ -10,6 +10,7 @@ from gi.repository import Gtk, Gdk
 from Enums import WinState
 from winInitial import WinInitial
 from mainGameWindow import MainGameWindow
+from newCharSheet import NewCharSheet
 
 class MainWindow(Gtk.Window):
 	#notebook - the notebook to handle the "tabs"
@@ -30,6 +31,7 @@ class MainWindow(Gtk.Window):
 		self.max_height = self.gdk_screen.get_height()
 
 		self.state = WinState(0).initial_state()
+		# self.state = WinState.NEW_CHAR
 		self.buildWindow()
 
 	def buildWindow(self):
@@ -49,13 +51,13 @@ class MainWindow(Gtk.Window):
 			self.clear()
 
 			#biuld the correct window
-			choose_game = WinInitial(self)
+			WinInitial(self)
 		elif self.state == WinState.NEW_CHAR:
 			#clear windows if needed
 			self.clear()
 
 			#biuld the correct window
-			#
+			NewCharSheet(self)
 		else:
 			pass
 

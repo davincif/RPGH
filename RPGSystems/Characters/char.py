@@ -6,9 +6,15 @@ from RPGSystems.Enums.race import Race
 from RPGSystems.Enums.classes import Classes
 from RPGSystems.Enums.personality import Personality
 from RPGSystems.coinBag import CoinBag
+from RPGSystems.Enums.diceType import DiceType
 
 
 class Char:
+
+	#player info (if it is a player)
+	is_player = False
+	#player_name - only if is player
+
 	#base attributes (those who goes in the sheet)
 	base_strength = 0
 	base_dextrity = 0
@@ -33,6 +39,11 @@ class Char:
 	current_windom = 0
 	current_charisma = 0
 
+	#hit points
+	life_dice = None
+	base_hitpoints = 0
+	current_hitpoints = 0
+
 	#proficiency
 	proficiency_bonus = 2
 
@@ -48,6 +59,7 @@ class Char:
 	level = 1
 
 	#custom characteristics
+	name = None
 	age = None
 	height = None
 	weight = None
