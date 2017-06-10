@@ -192,7 +192,7 @@ class WinInitial:
 
 			#load and delete bottuns
 			loadbutton = Gtk.Button(label="Load")
-			loadbutton.connect("clicked", self.load_game)
+			loadbutton.connect("clicked", self.load_game, elem)
 			delbutton = Gtk.Button(label="Delete")
 			delbutton.connect("clicked", self.delete_game, elem.find("./name"))
 
@@ -255,6 +255,8 @@ class WinInitial:
 		path = self.game_name.get_text()
 
 		if rpg_system is None or os.path.isdir("games/" + path):
+			#error: rpg system not choosed or game already exist
+
 			#create the label error
 			if self.ngw_vbox_el is None:
 				self.ngw_vbox_el = Gtk.Label()
@@ -276,6 +278,8 @@ class WinInitial:
 			self.ngw_vbox_el.set_markup(aux)
 			self.ngw_vbox_el.props.visible = True
 		else:
+			#ready to go, set what is needed for a game
+
 			#create the game's directory
 			os.makedirs("games/" + path)
 
@@ -305,6 +309,13 @@ class WinInitial:
 			root = self.xmlfile.getroot()
 			root.append(new_element)
 			self.xmlfile.write("games/games.xml")
+
+			#create game confiuration xml file
+			gf = open("games/" + path + "/gameconfig.xml", "w")
+			gf.write('<?xml version="1.0"?>\n<game_settings>\n</game_settings>\n')
+			gf.close()
+
+
 
 			#destroy the dialog
 			self.cancel_callback(widget)
@@ -340,7 +351,14 @@ class WinInitial:
 		#update the game menu window
 		self.refresh_game_menu()
 
-	def load_game(self, widget):
+	def load_game(self, widget, xml_element):
+		###
+		# load the choosen game, set the window state and the rpg system
+		###
+
+		#set rpg system
+		self.window.rpg_system = RPGType(int(xml_element.find("./RPGSystem_id").text))
+
 		#go to another window state
 		self.window.state = self.window.state.MAIN_PLAY
 		self.window.buildWindow()
