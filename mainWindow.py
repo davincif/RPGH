@@ -20,6 +20,7 @@ class MainWindow(Gtk.Window):
 	#gdk_screen - the Gdk.Screen which holds the screen's settings
 	#max_width
 	#max_height
+	rpg_system = None #the RPG system type being played (settled by winInitial after a game load)
 
 	def __init__(self):
 		Gtk.Window.__init__(self)
@@ -31,7 +32,7 @@ class MainWindow(Gtk.Window):
 		self.max_height = self.gdk_screen.get_height()
 
 		self.state = WinState(0).initial_state()
-		# self.state = WinState.NEW_CHAR
+		# self.state = WinState.NEW_CHAR #line for tests
 		self.buildWindow()
 
 	def buildWindow(self):
