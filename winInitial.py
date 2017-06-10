@@ -31,6 +31,7 @@ class WinInitial:
 	#data
 	gAmount = None #game Amount
 	xmlfile = None #the file that contains games direcotory
+	rpg_system = None #the RPG system type being played
 
 	def __init__(self, window):
 		self.window = window
@@ -185,6 +186,10 @@ class WinInitial:
 			timedate.set_markup(aux)
 			timedate.set_xalign(1)
 
+			#rpg type
+			aux = int(elem.find("./RPGSystem_id").text)
+			self.rpg_system = RSType(aux)
+
 			#load and delete bottuns
 			loadbutton = Gtk.Button(label="Load")
 			loadbutton.connect("clicked", self.load_game)
@@ -241,7 +246,9 @@ class WinInitial:
 		rpg_system = None
 		for k, v in self.check_boxes.items():
 			if v.get_active() == True:
+				rpg_system_id = k.value
 				rpg_system = k.get_fancy_name()
+				break
 
 		#get the game name
 		path = self.game_name.get_text()
@@ -290,8 +297,9 @@ class WinInitial:
 			aux += "\t\t\t<time>{4}</time>\n"
 			aux += "\t\t</last_play>\n"
 			aux += "\t\t<RPGSystem>{5}</RPGSystem>\n"
+			aux += "\t\t<RPGSystem_id>{6}</RPGSystem_id>\n"
 			aux += "</game>\n" #apparently doesn't metter how much '\n' there is -.-'
-			aux = aux.format(path, now.day, now.month, now.year, time, rpg_system)
+			aux = aux.format(path, now.day, now.month, now.year, time, rpg_system, str(rpg_system_id))
 			new_element = ET.fromstring(aux)
 			root = self.xmlfile.getroot()
 			root.append(new_element)

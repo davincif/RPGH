@@ -2,7 +2,7 @@ from enum import Enum
 
 class RSType(Enum):
 	__order__ = "RSType is iterable"
-	DND5 = 0 #D&D 5º edition
+	DND5 = 1 #D&D 5º edition
 
 	#COMMUM METHODS
 	def describe(self):
