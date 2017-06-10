@@ -1,6 +1,6 @@
 from RPGSystems.DND5.Characters.char import Char
 from RPGSystems.DND5.Characters.elf import Elf
-from RPGSystems.DND5.Characters.forestElf import ForestElf
+from RPGSystems.DND5.Characters.woodElf import WoodElf
 from RPGSystems.DND5.Characters.highElf import HighElf
 from RPGSystems.DND5.Characters.blackElf import BlackElf
 from RPGSystems.DND5.Characters.dwarf import Dwarf

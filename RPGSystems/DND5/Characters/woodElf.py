@@ -8,7 +8,7 @@ from RPGSystems.DND5.Characters.char import Char
 from RPGSystems.DND5.Characters.elf import Elf
 
 
-class ForestElf(Elf):
+class WoodElf(Elf):
 	def __init__(self):
 		super()
-		self.race = Race.FOREST_ELF
+		self.race = Race.WOOD_ELF

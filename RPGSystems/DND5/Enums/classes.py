@@ -22,14 +22,14 @@ class Classes(Enum):
 		if self == self.NO_CLASS:
 			return "unrecognized"
 		elif self == self.BARBARIAN:
-			return "elf"
+			return "barbarian"
 		elif self == self.BARD:
-			return "forest elf"
+			return "bard"
 		elif self == self.CLERIC:
-			return "high elf"
+			return "cleric"
 		elif self == self.WARRIOR:
-			return "black elf"
+			return "warrior"
 		elif self == self.ROGUE:
-			return "dwarf"
+			return "rogue"
 		elif self == self.WIZARD:
-			return "hill dwarf"
+			return "wizard"

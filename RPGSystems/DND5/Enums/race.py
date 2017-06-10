@@ -9,7 +9,7 @@ class Race(Enum):
 
 	#elfs
 	ELF = 0
-	FOREST_ELF = 1
+	WOOD_ELF = 1
 	HIGH_ELF = 2
 	BLACK_ELF = 3
 
@@ -52,8 +52,8 @@ class Race(Enum):
 			return "unrecognized"
 		elif self == self.ELF:
 			return "elf"
-		elif self == self.FOREST_ELF:
-			return "forest elf"
+		elif self == self.WOOD_ELF:
+			return "wood elf"
 		elif self == self.HIGH_ELF:
 			return "high elf"
 		elif self == self.BLACK_ELF:
@@ -76,7 +76,7 @@ class Race(Enum):
 			return "half-orc"
 		elif self == self.TIEFLING:
 			return "tiefling"
-		elif self == self.HUMANO:
+		elif self == self.HUMAN:
 			return "human"
 		elif self == self.DRACONATO:
 			return "draconato"
@@ -92,3 +92,9 @@ class Race(Enum):
 			return self.NO_RACE
 		else:
 			return Race(int(self.value / 50)*50)
+
+	def is_uprace(self):
+		if int(self.value / 50)*50 == self.value:
+			return True
+		else:
+			return False
