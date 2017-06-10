@@ -2,11 +2,11 @@
 #
 
 #Internal Imports
-from RPGSystems.Enums.race import Race
-from RPGSystems.Enums.classes import Classes
-from RPGSystems.Enums.personality import Personality
-from RPGSystems.coinBag import CoinBag
-from RPGSystems.Enums.diceType import DiceType
+from RPGSystems.DND5.Enums.race import Race
+from RPGSystems.DND5.Enums.classes import Classes
+from RPGSystems.DND5.Enums.personality import Personality
+from RPGSystems.DND5.coinBag import CoinBag
+from RPGSystems.DND5.Enums.diceType import DiceType
 
 
 class Char:

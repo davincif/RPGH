@@ -12,7 +12,7 @@ from gi.repository import Gtk, Gdk
 from Enums import WinState
 from Enums import MsgType
 from popUpMsg import PopUpMsg
-from RPGSystems.Enums.type import RSType
+from Enums.rpgtype import RPGType
 
 
 class WinInitial:
@@ -31,8 +31,9 @@ class WinInitial:
 	#data
 	gAmount = None #game Amount
 	xmlfile = None #the file that contains games direcotory
-	rpg_system = None #the RPG system type being played
 
+	#add on the Mainwindow properties
+	#rpg_system - the RPG system type being played
 	def __init__(self, window):
 		self.window = window
 
@@ -101,11 +102,11 @@ class WinInitial:
 		self.ngw_vbox.add(self.game_name)
 
 		#input game system
-		for rpg_type in RSType:
+		for rpg_type in RPGType:
 			self.check_boxes[rpg_type] = Gtk.CheckButton(rpg_type.get_fancy_name())
 			self.check_boxes[rpg_type].connect("toggled", self.on_RSTYPE_toggled)
 			self.ngw_vbox.add(self.check_boxes[rpg_type])
-		self.check_boxes[RSType.DND5].set_active(True)
+		self.check_boxes[RPGType.DND5].set_active(True)
 
 		#ok / cancel buttons
 		hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
@@ -188,7 +189,6 @@ class WinInitial:
 
 			#rpg type
 			aux = int(elem.find("./RPGSystem_id").text)
-			self.rpg_system = RSType(aux)
 
 			#load and delete bottuns
 			loadbutton = Gtk.Button(label="Load")
@@ -235,6 +235,7 @@ class WinInitial:
 	def on_typing_in_entry(self, widget):
 		if self.ngw_vbox_el is not None and self.ngw_vbox_el.props.visible:
 			self.ngw_vbox_el.props.visible = False
+
 
 	#BACK END FUNCTIONS
 	def set_new_game(self, widget):

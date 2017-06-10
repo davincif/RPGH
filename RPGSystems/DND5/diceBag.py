@@ -2,7 +2,7 @@
 import random
 
 #Internal Imports
-from RPGSystems.Enums.diceType import DiceType
+from RPGSystems.DND5.Enums.diceType import DiceType
 
 class DiceBag:
 	dice = None
