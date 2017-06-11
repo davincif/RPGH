@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class Attribute(Enum):
-	__order__ = "Classes is iterable"
+	__order__ = "Attribute is iterable"
 
 	#race not recognized
 	NO_ATTRIBUTE = -1

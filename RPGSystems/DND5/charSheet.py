@@ -11,6 +11,7 @@ from RPGSystems.DND5.Enums.classes import Classes
 from RPGSystems.DND5.Enums.race import Race
 from RPGSystems.DND5.Enums.personality import Personality
 from RPGSystems.DND5.Enums.attribute import Attribute
+from RPGSystems.DND5.Enums.skill import Skill
 
 
 class CharSheet:
@@ -34,6 +35,9 @@ class CharSheet:
 
 	stCheckBox = [] #save throw Check Box
 	saveTrowEntry = [] #save throw Entry
+
+	skillCheckBox = []
+	skillEntry = []
 	
 	def __init__(self, window):
 		self.window = window
@@ -176,6 +180,21 @@ class CharSheet:
 				stBox.pack_start(auxBox, expand=False, fill=False, padding=0)
 				n += 1
 		######SAVING TROWS######
+
+		######SKILLS######
+		skillBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+		n = 0
+		for at in Skill:
+			if at != Skill.NO_SKILL:
+				auxBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+				self.skillCheckBox += [Gtk.CheckButton()]
+				self.skillEntry += [Gtk.Entry()]
+				auxBox.pack_start(self.skillCheckBox[n], expand=False, fill=False, padding=0)
+				auxBox.pack_start(self.skillEntry[n], expand=True, fill=True, padding=0)
+				auxBox.pack_start(Gtk.Label(at.get_fancy_name()), expand=False, fill=False, padding=0)
+				skillBox.pack_start(auxBox, expand=False, fill=False, padding=0)
+				n += 1
+		######SKILLS######
 		######INSPIRATION | PROFICIENCY BONUS | SAVING TROWS | SKILLS######
 
 		#final packing on general box
@@ -184,6 +203,7 @@ class CharSheet:
 		ggrid.attach(self.insp_checkBox, left=1, top=1, width=2, height=1) #inspiration
 		ggrid.attach(profBox, left=1, top=2, width=2, height=1) #proficiency bonus
 		ggrid.attach(stBox, left=1, top=3, width=2, height=2) #save throws
+		ggrid.attach(skillBox, left=1, top=5, width=2, height=2) #save throws
 
 		#put all on window and show
 		window.set_position(Gtk.WindowPosition.CENTER)
