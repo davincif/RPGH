@@ -57,6 +57,13 @@ class CharSheet:
 	atknspells = {} #Name, ATK Bonus and Damage/Type Entry
 
 	coins = {} #coins Entry
+
+	perTraitsTV = None #character PERSONALITY TRAITS TextView
+	idealTV = None #character IDEAL TextView
+	boundTV = None #character BOUND TextView
+	flawsTV = None #character FLAWS TextView
+
+	feturesTraits = None #Feature Traits TextView
 	
 	def __init__(self, window):
 		self.window = window
@@ -209,8 +216,8 @@ class CharSheet:
 			if at != Skill.NO_SKILL:
 				auxBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 				self.skillCheckBox += [Gtk.CheckButton()]
-				self.skillCheckBox[n].set_sensitive(False)
 				self.skillEntry += [Gtk.Entry()]
+				self.skillEntry[n].set_sensitive(False)
 				auxBox.pack_start(self.skillCheckBox[n], expand=False, fill=False, padding=0)
 				auxBox.pack_start(self.skillEntry[n], expand=False, fill=False, padding=0)
 				auxBox.pack_start(Gtk.Label(at.get_fancy_name()), expand=False, fill=False, padding=0)
@@ -420,9 +427,27 @@ class CharSheet:
 		######EQUIPMENT######
 
 		######2º GRAY BOX######
+		graybox2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+
+		self.perTraitsTV = Gtk.TextView()
+		self.idealTV = Gtk.TextView()
+		self.boundTV = Gtk.TextView()
+		self.flawsTV = Gtk.TextView()
+		graybox2.pack_start(self.perTraitsTV, expand=True, fill=True, padding=0)
+		graybox2.pack_start(Gtk.Label("Personality Traits"), expand=True, fill=True, padding=0)
+		graybox2.pack_start(self.idealTV, expand=True, fill=True, padding=0)
+		graybox2.pack_start(Gtk.Label("Ideal"), expand=True, fill=True, padding=0)
+		graybox2.pack_start(self.boundTV, expand=True, fill=True, padding=0)
+		graybox2.pack_start(Gtk.Label("Bonds"), expand=True, fill=True, padding=0)
+		graybox2.pack_start(self.flawsTV, expand=True, fill=True, padding=0)
+		graybox2.pack_start(Gtk.Label("Flwas"), expand=True, fill=True, padding=0)
 		######2º GRAY BOX######
 
 		######FEATURES & TRAITS######
+		ftBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+		self.feturesTraits = Gtk.TextView()
+		ftBox.pack_start(self.feturesTraits, expand=True, fill=True, padding=0)
+		ftBox.pack_start(Gtk.Label("FEATURES & TRAITS"), expand=False, fill=True, padding=0)
 		######FEATURES & TRAITS######
 
 		#final packing on general box
@@ -434,9 +459,11 @@ class CharSheet:
 		ggrid.attach(skillBox, left=1, top=5, width=2, height=2) #skill
 		ggrid.attach(pwBox, left=0, top=7, width=3, height=1) #passive wis. (perception)
 		ggrid.attach(plBox, left=0, top=8, width=3, height=2) #profic. & languages
-		ggrid.attach(graybox1, left=4, top=1, width=3, height=4) #profic. & languages
-		ggrid.attach(atksplGrid, left=4, top=5, width=3, height=2) #profic. & languages
-		ggrid.attach(equipBox, left=4, top=8, width=3, height=3) #profic. & languages
+		ggrid.attach(graybox1, left=4, top=1, width=3, height=4)
+		ggrid.attach(atksplGrid, left=4, top=5, width=3, height=2) #attack and spellcasting
+		ggrid.attach(equipBox, left=4, top=8, width=3, height=3) #equipaments (bag)
+		ggrid.attach(graybox2, left=7, top=1, width=3, height=4) #personality, bonds...
+		ggrid.attach(ftBox, left=7, top=5, width=3, height=5) #feature traits
 
 		#put all on window and show
 		window.set_position(Gtk.WindowPosition.CENTER)
