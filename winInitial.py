@@ -342,6 +342,7 @@ class WinInitial:
 		## CAUTION:  This is dangerous!  For example, if top == '/', it
 		## could delete all your disk files.
 		for root, dirs, files in os.walk("games/" + game_name.text, topdown=False):
+			root = root + "/"
 			for name in files:
 				os.remove(root + name)
 			for name in dirs:

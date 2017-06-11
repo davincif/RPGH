@@ -40,7 +40,20 @@ class CharSheet:
 	skillEntry = []
 	pwPerception = None #passive wisdom (perception) Entry
 
+
 	profLang = None #other proficiencies & languages TextView
+
+	armorClass = None #armor class Entry
+	initiative = None #initiative Entry
+	speed = None #speed Entry
+	maxHitPoint = None #maxumim hit points Entry
+	curHitPoint = None #current hit points Entry
+	tempHitPoints = None #temporary hit points Entry
+
+	DSSCheckBox = [] #death saves successs CheckBox
+	DSFCheckBox = [] #death saves failures CheckBox
+
+	atknspells = {} #Name, ATK Bonus and Damage/Type Entry
 	
 	def __init__(self, window):
 		self.window = window
@@ -224,6 +237,161 @@ class CharSheet:
 		plBox.pack_start(Gtk.Label("OTHER PROFICIENCIES & LANGUAGES"), expand=True, fill=True, padding=0)
 		######OTHER PROFICIENCIES & LANGUAGES######
 
+		######1º GRAY BOX######
+		graybox1 = Gtk.Grid()
+		graybox1.set_row_spacing(20)
+		graybox1.set_column_spacing(20)
+
+		######ARMOR CLASS######
+		armorClassBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+		self.armorClass = Gtk.Entry()
+		self.armorClass.set_has_frame(False)
+		self.armorClass.set_max_length(3)
+		self.armorClass.set_sensitive(False)
+		self.armorClass.props.xalign = 0.5
+		self.armorClass.set_text("0")
+		armorClassBox.pack_start(self.armorClass, expand=True, fill=True, padding=0)
+		armorClassBox.pack_start(Gtk.Label("armor class"), expand=False, fill=False, padding=0)
+		######ARMOR CLASS######
+
+		######INITIATIVE######
+		initiativeBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+		self.initiative = Gtk.Entry()
+		self.initiative.set_has_frame(False)
+		self.initiative.set_max_length(3)
+		self.initiative.set_sensitive(False)
+		self.initiative.props.xalign = 0.5
+		self.initiative.set_text("0")
+		initiativeBox.pack_start(self.initiative, expand=True, fill=True, padding=0)
+		initiativeBox.pack_start(Gtk.Label("initiative"), expand=False, fill=False, padding=0)
+		######INITIATIVE######
+
+		######SPEED######
+		speedBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+		self.speed = Gtk.Entry()
+		self.speed.set_has_frame(False)
+		self.speed.set_max_length(3)
+		self.speed.set_sensitive(False)
+		self.speed.props.xalign = 0.5
+		self.speed.set_text("0")
+		speedBox.pack_start(self.speed, expand=True, fill=True, padding=0)
+		speedBox.pack_start(Gtk.Label("speed"), expand=False, fill=False, padding=0)
+		######SPEED######
+
+		######CURRENT HIT POINTS######
+		pointBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
+		# pointBox.modify_bg(Gtk.StateType.NORMAL, Gdk.Color(65535, 65535, 65535))
+		maxhitpoitBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+		self.maxHitPoint = Gtk.Entry()
+		self.maxHitPoint.set_has_frame(False)
+		self.maxHitPoint.set_max_length(3)
+		self.maxHitPoint.set_sensitive(False)
+		self.maxHitPoint.props.xalign = 0.5
+		self.maxHitPoint.set_text("0")	
+		maxhitpoitBox.pack_start(Gtk.Label("Hit Point Maximum"), expand=False, fill=False, padding=0)
+		maxhitpoitBox.pack_start(self.maxHitPoint, expand=True, fill=True, padding=0)
+		curHitpoitBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
+		self.curHitPoint = Gtk.Entry()
+		self.curHitPoint.set_has_frame(False)
+		self.curHitPoint.set_max_length(3)
+		self.curHitPoint.set_sensitive(False)
+		self.curHitPoint.props.xalign = 0.5
+		self.curHitPoint.set_text("0")	
+		curHitpoitBox.pack_start(self.curHitPoint, expand=True, fill=True, padding=0)
+		curHitpoitBox.pack_start(Gtk.Label("Current Hit Points"), expand=False, fill=False, padding=0)
+		pointBox.pack_start(maxhitpoitBox, expand=True, fill=True, padding=0)
+		pointBox.pack_start(curHitpoitBox, expand=True, fill=True, padding=0)
+		######CURRENT HIT POINTS######
+
+		######TEMPORARY HIT POINTS######
+		tempHitBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+		self.tempHitPoints = Gtk.Entry()
+		self.tempHitPoints.set_has_frame(False)
+		self.tempHitPoints.set_max_length(3)
+		self.tempHitPoints.set_sensitive(False)
+		self.tempHitPoints.props.xalign = 0.5
+		self.tempHitPoints.set_text("0")
+		tempHitBox.pack_start(self.tempHitPoints, expand=True, fill=True, padding=0)
+		tempHitBox.pack_start(Gtk.Label("Temporary Hit Points"), expand=False, fill=False, padding=0)
+		######TEMPORARY HIT POINTS######
+
+		######HIT DICE######
+		hitDiceBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
+		totalHitDiceBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+		self.totalHitDice = Gtk.Entry()
+		self.totalHitDice.set_has_frame(False)
+		self.totalHitDice.set_max_length(3)
+		self.totalHitDice.set_sensitive(False)
+		self.totalHitDice.props.xalign = 0.5
+		self.totalHitDice.set_text("0")	
+		totalHitDiceBox.pack_start(Gtk.Label("Total Hit Dice"), expand=False, fill=False, padding=0)
+		totalHitDiceBox.pack_start(self.totalHitDice, expand=True, fill=True, padding=0)
+		curHitDiceBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
+		self.curHitDice = Gtk.Entry()
+		self.curHitDice.set_has_frame(False)
+		self.curHitDice.set_max_length(3)
+		self.curHitDice.set_sensitive(False)
+		self.curHitDice.props.xalign = 0.5
+		self.curHitDice.set_text("0")	
+		curHitDiceBox.pack_start(self.curHitDice, expand=True, fill=True, padding=0)
+		curHitDiceBox.pack_start(Gtk.Label("Hit Dice"), expand=False, fill=False, padding=0)
+		hitDiceBox.pack_start(totalHitDiceBox, expand=True, fill=True, padding=0)
+		hitDiceBox.pack_start(curHitDiceBox, expand=True, fill=True, padding=0)
+		######HIT DICE######
+
+		######DEATH SAVES######
+		deathSaveBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
+
+		self.DSSCheckBox += [Gtk.CheckButton(), Gtk.CheckButton(), Gtk.CheckButton()]
+		auxBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+		auxBox.pack_start(Gtk.Label("successes"), expand=False, fill=False, padding=0)
+		for cb in self.DSSCheckBox:
+			auxBox.pack_start(cb, expand=True, fill=True, padding=0)
+		deathSaveBox.pack_start(auxBox, expand=True, fill=True, padding=0)
+		
+		auxBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+		self.DSFCheckBox += [Gtk.CheckButton(), Gtk.CheckButton(), Gtk.CheckButton()]
+		auxBox.pack_start(Gtk.Label("failures"), expand=False, fill=False, padding=0)
+		for cb in self.DSFCheckBox:
+			auxBox.pack_start(cb, expand=True, fill=True, padding=0)
+		deathSaveBox.pack_start(auxBox, expand=True, fill=True, padding=0)
+		deathSaveBox.pack_start(Gtk.Label("Death Saves"), expand=True, fill=True, padding=0)
+		######DEATH SAVES######
+
+
+		graybox1.attach(armorClassBox, left=0, top=0, width=2, height=1)
+		graybox1.attach(initiativeBox, left=3, top=0, width=2, height=1)
+		graybox1.attach(speedBox, left=5, top=0, width=2, height=1)
+		graybox1.attach(pointBox, left=0, top=1, width=6, height=2)
+		graybox1.attach(tempHitBox, left=0, top=3, width=6, height=2)
+		graybox1.attach(hitDiceBox, left=0, top=5, width=3, height=2)
+		graybox1.attach(deathSaveBox, left=3, top=5, width=3, height=2)
+		######1º GRAY BOX######
+
+		######ATTACKS & SPELLCASTING######
+		#não sei direito como funciona essa parte
+		atksplGrid = Gtk.Grid()
+		atksplGrid.set_row_spacing(20)
+		atksplGrid.set_column_spacing(20)
+
+		self.atknspells = {"Name": Gtk.Entry(),
+							"ATK Bonus": Gtk.Entry(),
+							"Damage/Type": Gtk.Entry()}
+		n = 0
+		for k, v in self.atknspells.items():
+			auxBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+			auxBox.pack_start(Gtk.Label(k), expand=False, fill=False, padding=0)
+			auxBox.pack_start(v, expand=True, fill=True, padding=0)
+			if k != "ATK Bonus":
+				atksplGrid.attach(auxBox, left=n, top=0, width=2, height=1)
+				n += 2
+			else:
+				atksplGrid.attach(auxBox, left=n, top=0, width=1, height=1)
+				n += 1
+			atksplGrid.attach(Gtk.Button("+"), left=0, top=1, width=5, height=1)
+			atksplGrid.attach(Gtk.Label("ATTACKS & SPELLCASTING"), left=0, top=2, width=5, height=1)
+		######ATTACKS & SPELLCASTING######
+
 		#final packing on general box
 		ggrid.attach(headGrid, left=0, top=0, width=9, height=1) #head
 		ggrid.attach(attBox, left=0, top=1, width=1, height=6) #attributes
@@ -233,6 +401,8 @@ class CharSheet:
 		ggrid.attach(skillBox, left=1, top=5, width=2, height=2) #skill
 		ggrid.attach(pwBox, left=0, top=7, width=3, height=1) #passive wis. (perception)
 		ggrid.attach(plBox, left=0, top=8, width=3, height=2) #profic. & languages
+		ggrid.attach(graybox1, left=4, top=1, width=3, height=4) #profic. & languages
+		ggrid.attach(atksplGrid, left=4, top=5, width=3, height=2) #profic. & languages
 
 		#put all on window and show
 		window.set_position(Gtk.WindowPosition.CENTER)
