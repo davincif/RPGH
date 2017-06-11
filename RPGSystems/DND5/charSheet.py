@@ -38,6 +38,9 @@ class CharSheet:
 
 	skillCheckBox = []
 	skillEntry = []
+	pwPerception = None #passive wisdom (perception) Entry
+
+	profLang = None #other proficiencies & languages TextView
 	
 	def __init__(self, window):
 		self.window = window
@@ -136,7 +139,7 @@ class CharSheet:
 		######HEAD######
 
 		######ATTRIBUTES######
-		attBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+		attBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=25)
 		base_spacing = 0
 		n = 0
 		for at in Attribute:
@@ -207,13 +210,29 @@ class CharSheet:
 		######SKILLS######
 		######INSPIRATION | PROFICIENCY BONUS | SAVING TROWS | SKILLS######
 
+		######PASSIVE WISDOM (PERCEPTION)######
+		pwBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+		self.pwPerception = Gtk.Entry()
+		pwBox.pack_start(self.pwPerception, expand=False, fill=False, padding=0)
+		pwBox.pack_start(Gtk.Label("passive wisdom (perception)"), expand=False, fill=False, padding=0)
+		######PASSIVE WISDOM (PERCEPTION)######
+
+		######OTHER PROFICIENCIES & LANGUAGES######
+		plBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+		self.profLang = Gtk.TextView()
+		plBox.pack_start(self.profLang, expand=True, fill=True, padding=0)
+		plBox.pack_start(Gtk.Label("OTHER PROFICIENCIES & LANGUAGES"), expand=True, fill=True, padding=0)
+		######OTHER PROFICIENCIES & LANGUAGES######
+
 		#final packing on general box
 		ggrid.attach(headGrid, left=0, top=0, width=9, height=1) #head
 		ggrid.attach(attBox, left=0, top=1, width=1, height=6) #attributes
-		ggrid.attach(self.insp_checkBox, left=1, top=1, width=1, height=1) #inspiration
-		ggrid.attach(profBox, left=1, top=2, width=1, height=1) #proficiency bonus
-		ggrid.attach(stBox, left=1, top=3, width=1, height=2) #save throws
-		ggrid.attach(skillBox, left=1, top=5, width=1, height=3) #save throws
+		ggrid.attach(self.insp_checkBox, left=1, top=1, width=2, height=1) #inspiration
+		ggrid.attach(profBox, left=1, top=2, width=2, height=1) #proficiency bonus
+		ggrid.attach(stBox, left=1, top=3, width=2, height=2) #save throws
+		ggrid.attach(skillBox, left=1, top=5, width=2, height=2) #skill
+		ggrid.attach(pwBox, left=0, top=7, width=3, height=1) #passive wis. (perception)
+		ggrid.attach(plBox, left=0, top=8, width=3, height=2) #profic. & languages
 
 		#put all on window and show
 		window.set_position(Gtk.WindowPosition.CENTER)
