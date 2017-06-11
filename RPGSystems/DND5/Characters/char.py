@@ -39,6 +39,14 @@ class Char:
 	current_windom = 0
 	current_charisma = 0
 
+	#saving throw
+	save_thow_strength = 0
+	save_thow_dextrity = 0
+	save_thow_constitution = 0
+	save_thow_intelligence = 0
+	save_thow_windom = 0
+	save_thow_charisma = 0
+
 	#hit points
 	life_dice = None
 	base_hitpoints = 0
