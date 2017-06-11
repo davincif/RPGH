@@ -12,6 +12,7 @@ from RPGSystems.DND5.Enums.race import Race
 from RPGSystems.DND5.Enums.personality import Personality
 from RPGSystems.DND5.Enums.attribute import Attribute
 from RPGSystems.DND5.Enums.skill import Skill
+from RPGSystems.DND5.Enums.coin import Coin
 
 
 class CharSheet:
@@ -54,6 +55,8 @@ class CharSheet:
 	DSFCheckBox = [] #death saves failures CheckBox
 
 	atknspells = {} #Name, ATK Bonus and Damage/Type Entry
+
+	coins = {} #coins Entry
 	
 	def __init__(self, window):
 		self.window = window
@@ -392,6 +395,36 @@ class CharSheet:
 			atksplGrid.attach(Gtk.Label("ATTACKS & SPELLCASTING"), left=0, top=2, width=5, height=1)
 		######ATTACKS & SPELLCASTING######
 
+		######EQUIPMENT######
+		equipBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
+		aux2Box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=15)
+
+		coinsBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=15)
+		for coin in Coin:
+			if coin != Coin.NO_COIN:
+				self.coins[coin] = Gtk.Entry()
+
+				auxBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+				auxBox.pack_start(Gtk.Label(coin.get_fancy_name()), expand=True, fill=False, padding=0)
+				auxBox.pack_start(self.coins[coin], expand=True, fill=True, padding=0)
+				coinsBox.pack_start(auxBox, expand=True, fill=True, padding=0)
+
+		toolsBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+		toolsBox.pack_start(Gtk.Entry(), expand=False, fill=True, padding=0)
+		toolsBox.pack_start(Gtk.Button("+"), expand=False, fill=True, padding=0)
+
+		aux2Box.pack_start(coinsBox, expand=True, fill=True, padding=0)
+		aux2Box.pack_start(toolsBox, expand=True, fill=True, padding=0)
+		equipBox.pack_start(aux2Box, expand=True, fill=True, padding=0)
+		equipBox.pack_start(Gtk.Label("EQUIPMENT & BAG"), expand=True, fill=True, padding=0)
+		######EQUIPMENT######
+
+		######2º GRAY BOX######
+		######2º GRAY BOX######
+
+		######FEATURES & TRAITS######
+		######FEATURES & TRAITS######
+
 		#final packing on general box
 		ggrid.attach(headGrid, left=0, top=0, width=9, height=1) #head
 		ggrid.attach(attBox, left=0, top=1, width=1, height=6) #attributes
@@ -403,6 +436,7 @@ class CharSheet:
 		ggrid.attach(plBox, left=0, top=8, width=3, height=2) #profic. & languages
 		ggrid.attach(graybox1, left=4, top=1, width=3, height=4) #profic. & languages
 		ggrid.attach(atksplGrid, left=4, top=5, width=3, height=2) #profic. & languages
+		ggrid.attach(equipBox, left=4, top=8, width=3, height=3) #profic. & languages
 
 		#put all on window and show
 		window.set_position(Gtk.WindowPosition.CENTER)

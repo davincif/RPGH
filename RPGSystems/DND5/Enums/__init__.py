@@ -4,3 +4,4 @@ from RPGSystems.DND5.Enums.personality import Personality
 from RPGSystems.DND5.Enums.diceType import DiceType
 from RPGSystems.DND5.Enums.attribute import Attribute
 from RPGSystems.DND5.Enums.skill import Skill
+from RPGSystems.DND5.Enums.coin import Coin
