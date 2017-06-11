@@ -10,6 +10,7 @@ from gi.repository import Gtk, Gdk, GdkPixbuf
 from RPGSystems.DND5.Enums.classes import Classes
 from RPGSystems.DND5.Enums.race import Race
 from RPGSystems.DND5.Enums.personality import Personality
+from RPGSystems.DND5.Enums.attribute import Attribute
 
 
 class CharSheet:
@@ -24,19 +25,15 @@ class CharSheet:
 	comboPerso = [] #the comboBox of the char's personalites
 	Exp = None #the char's Expirience Points
 
-	strengthAdjus = None # \/ SpinButton's Adjustment \/
-	dexterityAdjus = None
-	constitutionAdjus = None
-	intelligenceAdjus = None
-	wisdomAdjus = None
-	charismaAdjus = None # /\ SpinButton's Adjustment /\
+	attributeAdjus = [] #attributes' spinButton's Adjustment
+	attributeSPB = [] #attributes' SpinButton
 
-	strengthSPB = None # \/ strength SpinButton \/
-	dexteritySPB = None
-	constitutionSPB = None
-	intelligenceSPB = None
-	wisdomSPB = None
-	charismaSPB = None # /\ charisma SpinButton /\
+	insp_checkBox = None #Inspiration CheckBox
+	profBonusAdjus = None #Proficiency Bonus Adjustment
+	profBonusSPB = None #Proficiency Bonus SpinButton
+
+	stCheckBox = [] #save throw Check Box
+	saveTrowEntry = [] #save throw Entry
 	
 	def __init__(self, window):
 		self.window = window
@@ -135,75 +132,58 @@ class CharSheet:
 		######HEAD######
 
 		######ATTRIBUTES######
-		#atribute box
 		attBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-
 		base_spacing = 0
-		#strength
-		auxBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=base_spacing)
-		self.strengthAdjus = Gtk.Adjustment(0, 0, 100, 1, 10, 0) #(value, lower, upper, step_increment, page_increment, page_size)
-		self.strengthSPB = Gtk.SpinButton()
-		self.strengthSPB.set_adjustment(self.strengthAdjus)
-		auxBox.pack_start(Gtk.Label("strength"), expand=False, fill=False, padding=0)
-		auxBox.pack_start(self.strengthSPB, expand=False, fill=False, padding=0)
-		attBox.pack_start(auxBox, expand=False, fill=False, padding=0)
-
-		#dexterity
-		auxBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=base_spacing)
-		self.dexterityAdjus = Gtk.Adjustment(0, 0, 100, 1, 10, 0)
-		self.dexteritySPB = Gtk.SpinButton()
-		self.dexteritySPB.set_adjustment(self.dexterityAdjus)
-		auxBox.pack_start(Gtk.Label("dexterity"), expand=False, fill=False, padding=0)
-		auxBox.pack_start(self.dexteritySPB, expand=False, fill=False, padding=0)
-		attBox.pack_start(auxBox, expand=False, fill=False, padding=0)
-
-		#constitution
-		auxBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=base_spacing)
-		self.constitutionAdjus = Gtk.Adjustment(0, 0, 100, 1, 10, 0)
-		self.constitutionSPB = Gtk.SpinButton()
-		self.constitutionSPB.set_adjustment(self.constitutionAdjus)
-		auxBox.pack_start(Gtk.Label("constitution"), expand=False, fill=False, padding=0)
-		auxBox.pack_start(self.constitutionSPB, expand=False, fill=False, padding=0)
-		attBox.pack_start(auxBox, expand=False, fill=False, padding=0)
-
-		#intelligence
-		auxBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=base_spacing)
-		self.intelligenceAdjus = Gtk.Adjustment(0, 0, 100, 1, 10, 0)
-		self.intelligenceSPB = Gtk.SpinButton()
-		self.intelligenceSPB.set_adjustment(self.intelligenceAdjus)
-		auxBox.pack_start(Gtk.Label("intelligence"), expand=False, fill=False, padding=0)
-		auxBox.pack_start(self.intelligenceSPB, expand=False, fill=False, padding=0)
-		attBox.pack_start(auxBox, expand=False, fill=False, padding=0)
-
-		#wisdom
-		auxBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=base_spacing)
-		self.wisdomAdjus = Gtk.Adjustment(0, 0, 100, 1, 10, 0)
-		self.wisdomSPB = Gtk.SpinButton()
-		self.wisdomSPB.set_adjustment(self.wisdomAdjus)
-		auxBox.pack_start(Gtk.Label("wisdom"), expand=False, fill=False, padding=0)
-		auxBox.pack_start(self.wisdomSPB, expand=False, fill=False, padding=0)
-		attBox.pack_start(auxBox, expand=False, fill=False, padding=0)
-
-		#charisma
-		auxBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=base_spacing)
-		self.charismaAdjus = Gtk.Adjustment(0, 0, 100, 1, 10, 0)
-		self.charismaSPB = Gtk.SpinButton()
-		self.charismaSPB.set_adjustment(self.charismaAdjus)
-		auxBox.pack_start(Gtk.Label("charisma"), expand=False, fill=False, padding=0)
-		auxBox.pack_start(self.charismaSPB, expand=False, fill=False, padding=0)
-		attBox.pack_start(auxBox, expand=False, fill=False, padding=0)
+		n = 0
+		for at in Attribute:
+			if at != Attribute.NO_ATTRIBUTE:
+				auxBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=base_spacing)
+				self.attributeAdjus += [Gtk.Adjustment(0, 0, 100, 1, 10, 0)] #(value, lower, upper, step_increment, page_increment, page_size)
+				self.attributeSPB += [Gtk.SpinButton()]
+				self.attributeSPB[n].set_adjustment(self.attributeAdjus[n])
+				auxBox.pack_start(Gtk.Label(at.get_fancy_name()), expand=False, fill=False, padding=0)
+				auxBox.pack_start(self.attributeSPB[n], expand=True, fill=True, padding=0)
+				attBox.pack_start(auxBox, expand=False, fill=False, padding=0)
+				n += 1
 		######ATTRIBUTES######
 
 		######INSPIRATION | PROFICIENCY BONUS | SAVING TROWS | SKILLS######
 		ipskBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
 		######INSPIRATION######
-
+		self.insp_checkBox = Gtk.CheckButton.new_with_label("Inspiration")
 		######INSPIRATION######
+
+		######PROFICIENCY BONUS######
+		profBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=base_spacing)
+		self.profBonusAdjus = Gtk.Adjustment(0, 0, 100, 1, 10, 0)
+		self.profBonusSPB = Gtk.SpinButton()
+		self.profBonusSPB.set_adjustment(self.profBonusAdjus)
+		profBox.pack_start(self.profBonusSPB, expand=False, fill=False, padding=0)
+		profBox.pack_start(Gtk.Label("Proficiency Bonus"), expand=False, fill=False, padding=0)
+		######PROFICIENCY BONUS######
+
+		######SAVING TROWS######
+		stBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+		n = 0
+		for at in Attribute:
+			if at != Attribute.NO_ATTRIBUTE:
+				auxBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+				self.stCheckBox += [Gtk.CheckButton()]
+				self.saveTrowEntry += [Gtk.Entry()]
+				auxBox.pack_start(self.stCheckBox[n], expand=False, fill=False, padding=0)
+				auxBox.pack_start(self.saveTrowEntry[n], expand=True, fill=True, padding=0)
+				auxBox.pack_start(Gtk.Label(at.get_fancy_name()), expand=False, fill=False, padding=0)
+				stBox.pack_start(auxBox, expand=False, fill=False, padding=0)
+				n += 1
+		######SAVING TROWS######
 		######INSPIRATION | PROFICIENCY BONUS | SAVING TROWS | SKILLS######
 
 		#final packing on general box
-		ggrid.attach(headGrid, left=0, top=0, width=9, height=1)
-		ggrid.attach(attBox, left=0, top=1, width=1, height=6)
+		ggrid.attach(headGrid, left=0, top=0, width=9, height=1) #head
+		ggrid.attach(attBox, left=0, top=1, width=1, height=6) #attributes
+		ggrid.attach(self.insp_checkBox, left=1, top=1, width=2, height=1) #inspiration
+		ggrid.attach(profBox, left=1, top=2, width=2, height=1) #proficiency bonus
+		ggrid.attach(stBox, left=1, top=3, width=2, height=2) #save throws
 
 		#put all on window and show
 		window.set_position(Gtk.WindowPosition.CENTER)
