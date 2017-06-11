@@ -172,38 +172,48 @@ class CharSheet:
 		for at in Attribute:
 			if at != Attribute.NO_ATTRIBUTE:
 				auxBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-				self.stCheckBox += [Gtk.CheckButton()]
+				# self.stCheckBox += [Gtk.CheckButton()]
 				self.saveTrowEntry += [Gtk.Entry()]
-				auxBox.pack_start(self.stCheckBox[n], expand=False, fill=False, padding=0)
-				auxBox.pack_start(self.saveTrowEntry[n], expand=True, fill=True, padding=0)
+				# auxBox.pack_start(self.stCheckBox[n], expand=False, fill=False, padding=0)
+				auxBox.pack_start(self.saveTrowEntry[n], expand=False, fill=False, padding=0)
 				auxBox.pack_start(Gtk.Label(at.get_fancy_name()), expand=False, fill=False, padding=0)
 				stBox.pack_start(auxBox, expand=False, fill=False, padding=0)
 				n += 1
+		stBox.pack_start(Gtk.Label("SAVING TROWS"), expand=False, fill=False, padding=0)
+		stBox.set_valign(Gtk.Align.CENTER)
 		######SAVING TROWS######
 
 		######SKILLS######
-		skillBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+		aux2Box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 		n = 0
 		for at in Skill:
 			if at != Skill.NO_SKILL:
 				auxBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 				self.skillCheckBox += [Gtk.CheckButton()]
+				self.skillCheckBox[n].set_sensitive(False)
 				self.skillEntry += [Gtk.Entry()]
 				auxBox.pack_start(self.skillCheckBox[n], expand=False, fill=False, padding=0)
-				auxBox.pack_start(self.skillEntry[n], expand=True, fill=True, padding=0)
+				auxBox.pack_start(self.skillEntry[n], expand=False, fill=False, padding=0)
 				auxBox.pack_start(Gtk.Label(at.get_fancy_name()), expand=False, fill=False, padding=0)
-				skillBox.pack_start(auxBox, expand=False, fill=False, padding=0)
+				aux2Box.pack_start(auxBox, expand=False, fill=False, padding=0)
 				n += 1
+		skillscrolled = Gtk.ScrolledWindow()
+		skillscrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+		skillscrolled.add_with_viewport(aux2Box)
+		skillBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+		skillBox.pack_start(skillscrolled, expand=True, fill=True, padding=0)
+		skillBox.pack_start(Gtk.Label("SKILLS"), expand=False, fill=False, padding=0)
+		skillscrolled.props.min_content_height = 200 #horreble solution, but the only one I found...
 		######SKILLS######
 		######INSPIRATION | PROFICIENCY BONUS | SAVING TROWS | SKILLS######
 
 		#final packing on general box
 		ggrid.attach(headGrid, left=0, top=0, width=9, height=1) #head
 		ggrid.attach(attBox, left=0, top=1, width=1, height=6) #attributes
-		ggrid.attach(self.insp_checkBox, left=1, top=1, width=2, height=1) #inspiration
-		ggrid.attach(profBox, left=1, top=2, width=2, height=1) #proficiency bonus
-		ggrid.attach(stBox, left=1, top=3, width=2, height=2) #save throws
-		ggrid.attach(skillBox, left=1, top=5, width=2, height=2) #save throws
+		ggrid.attach(self.insp_checkBox, left=1, top=1, width=1, height=1) #inspiration
+		ggrid.attach(profBox, left=1, top=2, width=1, height=1) #proficiency bonus
+		ggrid.attach(stBox, left=1, top=3, width=1, height=2) #save throws
+		ggrid.attach(skillBox, left=1, top=5, width=1, height=3) #save throws
 
 		#put all on window and show
 		window.set_position(Gtk.WindowPosition.CENTER)
