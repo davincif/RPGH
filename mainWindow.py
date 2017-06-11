@@ -31,12 +31,7 @@ class MainWindow(Gtk.Window):
 		self.max_width = self.gdk_screen.get_width()
 		self.max_height = self.gdk_screen.get_height()
 
-		# self.state = WinState(0).initial_state()
-		####TEST AREA
-		self.state = WinState.NEW_CHAR #line for tests
-		from Enums.rpgtype import RPGType
-		self.rpg_system = RPGType.DND5
-		####TEST AREA
+		self.state = WinState(0).initial_state()
 		self.buildWindow()
 
 	def buildWindow(self):
