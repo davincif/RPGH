@@ -95,8 +95,20 @@ class CharSheet:
 		headGrid.set_column_spacing(10)
 
 		#char name box
-		self.charNameEntry = Gtk.Entry()
-		self.charNameEntry.set_text("Char Name")
+		nameStore = Gtk.ListStore(str)
+		nameStore.append(["Billy Bob"])
+		nameStore.append(["Billy Bob Junior"])
+		nameStore.append(["Sue Bob"])
+		nameStore.append(["Joey Jojo"])
+		nameStore.append(["Rob McRoberts"])
+		nameStore.append(["Xavier McRoberts"])
+
+		nameComboBox = Gtk.ComboBox.new_with_model_and_entry(nameStore)
+		nameComboBox.set_entry_text_column(0)
+		nameComboBox.connect("changed", self.on_name_combo_changed)
+
+		# self.charNameEntry = Gtk.Entry()
+		# self.charNameEntry.set_text("Char Name")
 
 		#race
 		raceBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
@@ -156,7 +168,7 @@ class CharSheet:
 		expBox.pack_start(Gtk.Label("Expirience"), expand=False, fill=False, padding=0)
 		expBox.pack_start(self.expEntry, expand=True, fill=True, padding=0)
 
-		headGrid.attach(self.charNameEntry, left=0, top=0, width=2, height=1)
+		headGrid.attach(nameComboBox, left=0, top=0, width=2, height=1)
 		headGrid.attach(classBox, left=2, top=0, width=1, height=1)
 		headGrid.attach(raceBox, left=3, top=0, width=1, height=1)
 		headGrid.attach(charNameBox, left=4, top=0, width=3, height=2)
@@ -480,6 +492,31 @@ class CharSheet:
 		self.on_change_lvlNexp(self.levelEntry)
 
 
+	#FRONT END
+	def on_name_combo_changed(self, combo):
+		tree_iter = combo.get_active_iter()
+		if tree_iter != None:
+			model = combo.get_model()
+			# print(model[tree_iter][0])
+		else:
+			entry = combo.get_child()
+			name = entry.get_text()
+			if name != "":
+				if name[0] == " ":
+					name = ""
+				else:
+					name = name[0].upper() + name[1:]
+
+				n = 0
+				while True:
+					n = len(name[:n]) + name[n:].find(" ")
+					if n < 0 or n+1 >= len(name) or name[n] != " ":
+						break
+
+					name = name[:n+1] + name[n+1].upper() + name[n+2:]
+					n += 2
+
+				entry.set_text(name)
 
 	#CALL BACK FUNCTIONS (BACK END)
 	def on_change_lvlNexp(self, widget):
