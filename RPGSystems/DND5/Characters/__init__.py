@@ -1,3 +1,7 @@
+#modules
+import RPGSystems.DND5.Characters.expNlevel
+
+#packs
 from RPGSystems.DND5.Characters.char import Char
 from RPGSystems.DND5.Characters.elf import Elf
 from RPGSystems.DND5.Characters.woodElf import WoodElf
@@ -16,4 +20,5 @@ from RPGSystems.DND5.Characters.human import Human
 from RPGSystems.DND5.Characters.draconito import Draconito
 from RPGSystems.DND5.Characters.gnome import Gnome
 from RPGSystems.DND5.Characters.forestGnome import ForestGnome
+from RPGSystems.DND5.Characters.rockGnome import RockGnome
 from RPGSystems.DND5.Characters.rockGnome import RockGnome

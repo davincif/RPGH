@@ -14,6 +14,8 @@ from RPGSystems.DND5.Enums.attribute import Attribute
 from RPGSystems.DND5.Enums.skill import Skill
 from RPGSystems.DND5.Enums.coin import Coin
 
+from RPGSystems.DND5.Characters.expNlevel import *
+
 
 class CharSheet:
 	window = None #the windows to be added on screen by the mainWindow
@@ -23,16 +25,17 @@ class CharSheet:
 
 	charNameEntry = None #the entry with the character name
 	playerNameEntry = None #the entry with the player name
-	level = None #character's level - this field shuld not be editable
+	levelEntry = None #character's level Entry
+	levelEntry_id = None #levelEntry connect id
 	comboPerso = [] #the comboBox of the char's personalites
-	Exp = None #the char's Expirience Points
+	expEntry = None #the char's Expirience Points Entry
+	expEntry_id = None #expEntry connect id
 
 	attributeAdjus = [] #attributes' spinButton's Adjustment
 	attributeSPB = [] #attributes' SpinButton
 
 	insp_checkBox = None #Inspiration CheckBox
-	profBonusAdjus = None #Proficiency Bonus Adjustment
-	profBonusSPB = None #Proficiency Bonus SpinButton
+	profBonusEntry = None #Proficiency Bonus Entry
 
 	stCheckBox = [] #save throw Check Box
 	saveTrowEntry = [] #save throw Entry
@@ -126,8 +129,9 @@ class CharSheet:
 		self.comboPerso += [Gtk.ComboBoxText()]
 		self.comboPerso += [Gtk.ComboBoxText()]
 		for i in Personality:
-			if i != Personality.NO_PERSONALITY:
+			if i.is_law():
 				self.comboPerso[0].append_text(i.get_fancy_name())
+			if i.is_morality():
 				self.comboPerso[1].append_text(i.get_fancy_name())
 		AligmentBox.pack_start(Gtk.Label("Alignments"), expand=False, fill=False, padding=0)
 		AligmentBox.pack_start(self.comboPerso[0], expand=True, fill=True, padding=0)
@@ -135,22 +139,22 @@ class CharSheet:
 
 		#level
 		levelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-		self.level = Gtk.Entry()
-		self.level.set_has_frame(False)
-		self.level.set_max_length(2)
-		self.level.set_sensitive(False)
-		self.level.props.xalign = 0.5
-		self.level.set_text("1")
+		self.levelEntry = Gtk.Entry()
+		self.levelEntry.set_has_frame(False)
+		self.levelEntry.set_max_length(2)
+		self.levelEntry.set_text("1")
+		self.levelEntry.props.xalign = 0.5
+		self.levelEntry_id = self.levelEntry.connect("changed", self.on_change_lvlNexp)
 		levelBox.pack_start(Gtk.Label("Level"), expand=False, fill=False, padding=0)
-		levelBox.pack_start(self.level, expand=True, fill=True, padding=0)
+		levelBox.pack_start(self.levelEntry, expand=True, fill=True, padding=0)
 
 		#Expirience Points
 		expBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-		self.Exp = Gtk.Entry()
-		# self.Exp.set_has_frame(False)
-		self.Exp.set_text("0")
+		self.expEntry = Gtk.Entry()
+		self.expEntry.props.xalign = 0.5
+		self.expEntry_id = self.expEntry.connect("changed", self.on_change_lvlNexp)
 		expBox.pack_start(Gtk.Label("Expirience"), expand=False, fill=False, padding=0)
-		expBox.pack_start(self.Exp, expand=True, fill=True, padding=0)
+		expBox.pack_start(self.expEntry, expand=True, fill=True, padding=0)
 
 		headGrid.attach(self.charNameEntry, left=0, top=0, width=2, height=1)
 		headGrid.attach(classBox, left=2, top=0, width=1, height=1)
@@ -185,10 +189,12 @@ class CharSheet:
 
 		######PROFICIENCY BONUS######
 		profBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=base_spacing)
-		self.profBonusAdjus = Gtk.Adjustment(0, 0, 100, 1, 10, 0)
-		self.profBonusSPB = Gtk.SpinButton()
-		self.profBonusSPB.set_adjustment(self.profBonusAdjus)
-		profBox.pack_start(self.profBonusSPB, expand=False, fill=False, padding=0)
+		self.profBonusEntry = Gtk.Entry()
+		self.profBonusEntry.set_has_frame(False)
+		self.profBonusEntry.set_max_length(2)
+		self.profBonusEntry.set_sensitive(False)
+		self.profBonusEntry.props.xalign = 0.5
+		profBox.pack_start(self.profBonusEntry, expand=False, fill=False, padding=0)
 		profBox.pack_start(Gtk.Label("Proficiency Bonus"), expand=False, fill=False, padding=0)
 		######PROFICIENCY BONUS######
 
@@ -469,3 +475,43 @@ class CharSheet:
 		window.set_position(Gtk.WindowPosition.CENTER)
 		window.add(self.scrolled)
 		window.show_all()
+
+		#updating field for the first time
+		self.on_change_lvlNexp(self.levelEntry)
+
+
+
+	#CALL BACK FUNCTIONS (BACK END)
+	def on_change_lvlNexp(self, widget):
+		###
+		# updates all field related to the level and expirience
+		###
+
+		level = None
+		exp = None
+		profBonus = None
+
+		#update level or expirience
+		if widget == self.levelEntry:
+			self.expEntry.handler_block(self.expEntry_id)
+			try:
+				level = int(widget.get_text())
+				exp, profBonus = exp_for_level(level)
+				self.expEntry.set_text(str(exp))
+			except ValueError as e:
+				self.levelEntry.set_text("")
+				self.expEntry.set_text("")
+			self.expEntry.handler_unblock(self.expEntry_id)
+		elif widget == self.expEntry:
+			self.levelEntry.handler_block(self.levelEntry_id)
+			try:
+				exp = int(widget.get_text())
+				level, profBonus = lvl_for_exp(exp)
+				self.levelEntry.set_text(str(level))
+			except ValueError as e:
+				self.levelEntry.set_text("")
+			self.levelEntry.handler_unblock(self.levelEntry_id)
+
+		#update the proficiency bonus
+		if profBonus is not None:
+			self.profBonusEntry.set_text("+" + str(profBonus))

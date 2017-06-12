@@ -8,8 +8,8 @@ class Personality(Enum):
 	NO_PERSONALITY = -1
 
 	GOOD = 0
-	NEUTRAL = 1
-	BAD = 2
+	BAD = 1
+	NEUTRAL = 2
 	CAOTIC = 3
 	LOYAL = 4
 
@@ -22,11 +22,23 @@ class Personality(Enum):
 			return "unrecognized"
 		elif self == self.GOOD:
 			return "good"
-		elif self == self.NEUTRAL:
-			return "neutral"
 		elif self == self.BAD:
 			return "bad"
+		elif self == self.NEUTRAL:
+			return "neutral"
 		elif self == self.CAOTIC:
 			return "caotic"
 		elif self == self.LOYAL:
 			return "loyal"
+
+	def is_morality(self):
+		if self.value <= self.NEUTRAL.value and self.value >= 0:
+			return True
+		else:
+			return False
+
+	def is_law(self):
+		if self.value >= self.NEUTRAL.value:
+			return True
+		else:
+			return False
