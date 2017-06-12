@@ -23,7 +23,7 @@ class CharSheet:
 	header = None #header
 	scrolled = None #all the screen
 
-	charNameEntry = None #the entry with the character name
+	charComboBox = None #the ComboBox with the character name
 	playerNameEntry = None #the entry with the player name
 	levelEntry = None #character's level Entry
 	levelEntry_id = None #levelEntry connect id
@@ -103,12 +103,9 @@ class CharSheet:
 		nameStore.append(["Rob McRoberts"])
 		nameStore.append(["Xavier McRoberts"])
 
-		nameComboBox = Gtk.ComboBox.new_with_model_and_entry(nameStore)
-		nameComboBox.set_entry_text_column(0)
-		nameComboBox.connect("changed", self.on_name_combo_changed)
-
-		# self.charNameEntry = Gtk.Entry()
-		# self.charNameEntry.set_text("Char Name")
+		self.charComboBox = Gtk.ComboBox.new_with_model_and_entry(nameStore)
+		self.charComboBox.set_entry_text_column(0)
+		self.charComboBox.connect("changed", self.on_name_combo_changed)
 
 		#race
 		raceBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
@@ -132,6 +129,7 @@ class CharSheet:
 		charNameBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 		self.playerNameEntry = Gtk.Entry()
 		self.playerNameEntry.set_text("Player Name")
+		self.playerNameEntry.connect("changed", self.on_name_combo_changed)
 		charNameBox.set_valign(Gtk.Align.CENTER)
 		charNameBox.pack_start(Gtk.Label("Player Name"), expand=False, fill=False, padding=0)
 		charNameBox.pack_start(self.playerNameEntry, expand=True, fill=True, padding=0)
@@ -168,7 +166,7 @@ class CharSheet:
 		expBox.pack_start(Gtk.Label("Expirience"), expand=False, fill=False, padding=0)
 		expBox.pack_start(self.expEntry, expand=True, fill=True, padding=0)
 
-		headGrid.attach(nameComboBox, left=0, top=0, width=2, height=1)
+		headGrid.attach(self.charComboBox, left=0, top=0, width=2, height=1)
 		headGrid.attach(classBox, left=2, top=0, width=1, height=1)
 		headGrid.attach(raceBox, left=3, top=0, width=1, height=1)
 		headGrid.attach(charNameBox, left=4, top=0, width=3, height=2)
@@ -493,30 +491,35 @@ class CharSheet:
 
 
 	#FRONT END
-	def on_name_combo_changed(self, combo):
-		tree_iter = combo.get_active_iter()
-		if tree_iter != None:
-			model = combo.get_model()
-			# print(model[tree_iter][0])
-		else:
-			entry = combo.get_child()
-			name = entry.get_text()
-			if name != "":
-				if name[0] == " ":
-					name = ""
-				else:
-					name = name[0].upper() + name[1:]
+	def on_name_combo_changed(self, widget):
+		if self.playerNameEntry == widget:
+			name = widget.get_text()
+			entry = widget
+		elif self.charComboBox == widget:
+			tree_iter = widget.get_active_iter()
+			entry = widget.get_child()
+			if tree_iter != None:
+				model = widget.get_model()
+				name = model[tree_iter][0]
+			else:
+				name = entry.get_text()
 
-				n = 0
-				while True:
-					n = len(name[:n]) + name[n:].find(" ")
-					if n < 0 or n+1 >= len(name) or name[n] != " ":
-						break
+		if name != "":
+			if name[0] == " ":
+				name = ""
+			else:
+				name = name[0].upper() + name[1:]
 
-					name = name[:n+1] + name[n+1].upper() + name[n+2:]
-					n += 2
+			n = 0
+			while True:
+				n = len(name[:n]) + name[n:].find(" ")
+				if n < 0 or n+1 >= len(name) or name[n] != " ":
+					break
 
-				entry.set_text(name)
+				name = name[:n+1] + name[n+1].upper() + name[n+2:]
+				n += 2
+
+		entry.set_text(name)
 
 	#CALL BACK FUNCTIONS (BACK END)
 	def on_change_lvlNexp(self, widget):
