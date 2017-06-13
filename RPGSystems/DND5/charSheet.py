@@ -30,18 +30,19 @@ class CharSheet:
 	comboPerso = [] #the comboBox of the char's personalites
 	expEntry = None #the char's Expirience Points Entry
 	expEntry_id = None #expEntry connect id
+	backEndEntry = None #char backend Entry
 
-	attributeAdjus = [] #attributes' spinButton's Adjustment
-	attributeSPB = [] #attributes' SpinButton
+	attEntry = [] #attributes' Entry
+	attModEntry = [] #attributes' modificator Entry
 
 	insp_checkBox = None #Inspiration CheckBox
 	profBonusEntry = None #Proficiency Bonus Entry
 
 	stCheckBox = [] #save throw Check Box
-	saveTrowEntry = [] #save throw Entry
+	saveTrowLabel = [] #save throw Entry
 
 	skillCheckBox = []
-	skillEntry = []
+	skillLabel = []
 	pwPerception = None #passive wisdom (perception) Entry
 
 
@@ -96,46 +97,45 @@ class CharSheet:
 
 		#char name box
 		nameStore = Gtk.ListStore(str)
-		nameStore.append(["Billy Bob"])
-		nameStore.append(["Billy Bob Junior"])
-		nameStore.append(["Sue Bob"])
-		nameStore.append(["Joey Jojo"])
-		nameStore.append(["Rob McRoberts"])
-		nameStore.append(["Xavier McRoberts"])
+		nameStore.append(["Name Test"])
+		nameStore.append(["Name Test"])
 
+		charNameBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 		self.charComboBox = Gtk.ComboBox.new_with_model_and_entry(nameStore)
 		self.charComboBox.set_entry_text_column(0)
 		self.charComboBox.connect("changed", self.on_name_combo_changed)
+		charNameBox.pack_start(self.charComboBox, expand=True, fill=True, padding=0)
+		charNameBox.pack_start(Gtk.Label("Character Name"), expand=True, fill=False, padding=0)
 
-		#race
-		raceBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+		#class
+		raceBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 		comboRace = Gtk.ComboBoxText()
 		for i in Classes:
 			if i != Classes.NO_CLASS:
 				comboRace.append_text(i.get_fancy_name())
-		raceBox.pack_start(Gtk.Label("Class"), expand=False, fill=False, padding=0)
 		raceBox.pack_start(comboRace, expand=True, fill=True, padding=0)
+		raceBox.pack_start(Gtk.Label("Class"), expand=True, fill=False, padding=0)
 
-		#class
-		classBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+		#race
+		classBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 		comboClass = Gtk.ComboBoxText()
 		for i in Race:
 			if i != Race.NO_RACE and not i.is_uprace():
 				comboClass.append_text(i.get_fancy_name())
-		classBox.pack_start(Gtk.Label("Race"), expand=False, fill=False, padding=0)
 		classBox.pack_start(comboClass, expand=True, fill=True, padding=0)
+		classBox.pack_start(Gtk.Label("Race"), expand=True, fill=False, padding=0)
 
 		#player name box
-		charNameBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+		playerNameBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 		self.playerNameEntry = Gtk.Entry()
 		self.playerNameEntry.set_text("Player Name")
 		self.playerNameEntry.connect("changed", self.on_name_combo_changed)
-		charNameBox.set_valign(Gtk.Align.CENTER)
-		charNameBox.pack_start(Gtk.Label("Player Name"), expand=False, fill=False, padding=0)
-		charNameBox.pack_start(self.playerNameEntry, expand=True, fill=True, padding=0)
+		playerNameBox.set_valign(Gtk.Align.CENTER)
+		playerNameBox.pack_start(self.playerNameEntry, expand=True, fill=True, padding=0)
+		playerNameBox.pack_start(Gtk.Label("Player Name"), expand=True, fill=False, padding=0)
 
 		#Alignment
-		AligmentBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+		AligmentBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 		self.comboPerso += [Gtk.ComboBoxText()]
 		self.comboPerso += [Gtk.ComboBoxText()]
 		for i in Personality:
@@ -143,36 +143,45 @@ class CharSheet:
 				self.comboPerso[0].append_text(i.get_fancy_name())
 			if i.is_morality():
 				self.comboPerso[1].append_text(i.get_fancy_name())
-		AligmentBox.pack_start(Gtk.Label("Alignments"), expand=False, fill=False, padding=0)
-		AligmentBox.pack_start(self.comboPerso[0], expand=True, fill=True, padding=0)
-		AligmentBox.pack_start(self.comboPerso[1], expand=True, fill=True, padding=0)
+		auxBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=2)
+		auxBox.pack_start(self.comboPerso[0], expand=True, fill=True, padding=0)
+		auxBox.pack_start(self.comboPerso[1], expand=True, fill=True, padding=0)
+		AligmentBox.pack_start(auxBox, expand=True, fill=True, padding=0)
+		AligmentBox.pack_start(Gtk.Label("Alignments"), expand=True, fill=False, padding=0)
 
 		#level
-		levelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+		levelBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 		self.levelEntry = Gtk.Entry()
 		self.levelEntry.set_has_frame(False)
 		self.levelEntry.set_max_length(2)
 		self.levelEntry.set_text("1")
 		self.levelEntry.props.xalign = 0.5
 		self.levelEntry_id = self.levelEntry.connect("changed", self.on_change_lvlNexp)
-		levelBox.pack_start(Gtk.Label("Level"), expand=False, fill=False, padding=0)
 		levelBox.pack_start(self.levelEntry, expand=True, fill=True, padding=0)
+		levelBox.pack_start(Gtk.Label("Level"), expand=True, fill=False, padding=0)
+
+		backEndBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+		self.backEndEntry = Gtk.Entry()
+		self.backEndEntry.props.xalign = 0.5
+		backEndBox.pack_start(self.backEndEntry, expand=True, fill=False, padding=0)
+		backEndBox.pack_start(Gtk.Label("Background"), expand=True, fill=False, padding=0)
 
 		#Expirience Points
-		expBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
+		expBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 		self.expEntry = Gtk.Entry()
 		self.expEntry.props.xalign = 0.5
 		self.expEntry_id = self.expEntry.connect("changed", self.on_change_lvlNexp)
-		expBox.pack_start(Gtk.Label("Expirience"), expand=False, fill=False, padding=0)
 		expBox.pack_start(self.expEntry, expand=True, fill=True, padding=0)
+		expBox.pack_start(Gtk.Label("Expirience"), expand=True, fill=False, padding=0)
 
-		headGrid.attach(self.charComboBox, left=0, top=0, width=2, height=1)
+		headGrid.attach(charNameBox, left=0, top=0, width=2, height=2)
 		headGrid.attach(classBox, left=2, top=0, width=1, height=1)
-		headGrid.attach(raceBox, left=3, top=0, width=1, height=1)
-		headGrid.attach(charNameBox, left=4, top=0, width=3, height=2)
-		headGrid.attach(AligmentBox, left=0, top=1, width=2, height=1)
-		headGrid.attach(levelBox, left=2, top=1, width=1, height=1)
+		headGrid.attach(raceBox, left=2, top=1, width=1, height=1)
+		headGrid.attach(levelBox, left=3, top=0, width=1, height=1)
 		headGrid.attach(expBox, left=3, top=1, width=1, height=1)
+		headGrid.attach(AligmentBox, left=4, top=0, width=1, height=1)
+		headGrid.attach(backEndBox, left=4, top=1, width=1, height=1)
+		headGrid.attach(playerNameBox, left=5, top=0, width=2, height=2)
 		######HEAD######
 
 		######ATTRIBUTES######
@@ -182,11 +191,13 @@ class CharSheet:
 		for at in Attribute:
 			if at != Attribute.NO_ATTRIBUTE:
 				auxBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=base_spacing)
-				self.attributeAdjus += [Gtk.Adjustment(0, 0, 100, 1, 10, 0)] #(value, lower, upper, step_increment, page_increment, page_size)
-				self.attributeSPB += [Gtk.SpinButton()]
-				self.attributeSPB[n].set_adjustment(self.attributeAdjus[n])
+				self.attEntry += [Gtk.Entry()]
+				self.attEntry[n].set_alignment(xalign=0.5)
+				self.attModEntry += [Gtk.Entry()]
+				self.attModEntry[n].set_sensitive(False)
 				auxBox.pack_start(Gtk.Label(at.get_fancy_name()), expand=False, fill=False, padding=0)
-				auxBox.pack_start(self.attributeSPB[n], expand=True, fill=True, padding=0)
+				auxBox.pack_start(self.attModEntry[n], expand=True, fill=True, padding=0)
+				auxBox.pack_start(self.attEntry[n], expand=True, fill=True, padding=0)
 				attBox.pack_start(auxBox, expand=False, fill=False, padding=0)
 				n += 1
 		######ATTRIBUTES######
@@ -214,10 +225,11 @@ class CharSheet:
 		for at in Attribute:
 			if at != Attribute.NO_ATTRIBUTE:
 				auxBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
-				# self.stCheckBox += [Gtk.CheckButton()]
-				self.saveTrowEntry += [Gtk.Entry()]
-				# auxBox.pack_start(self.stCheckBox[n], expand=False, fill=False, padding=0)
-				auxBox.pack_start(self.saveTrowEntry[n], expand=False, fill=False, padding=0)
+				self.stCheckBox += [Gtk.CheckButton()]
+				self.stCheckBox[n].set_sensitive(False)
+				self.saveTrowLabel += [Gtk.Label("______")]
+				auxBox.pack_start(self.stCheckBox[n], expand=False, fill=False, padding=0)
+				auxBox.pack_start(self.saveTrowLabel[n], expand=False, fill=False, padding=0)
 				auxBox.pack_start(Gtk.Label(at.get_fancy_name()), expand=False, fill=False, padding=0)
 				stBox.pack_start(auxBox, expand=False, fill=False, padding=0)
 				n += 1
@@ -232,10 +244,10 @@ class CharSheet:
 			if at != Skill.NO_SKILL:
 				auxBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 				self.skillCheckBox += [Gtk.CheckButton()]
-				self.skillEntry += [Gtk.Entry()]
-				self.skillEntry[n].set_sensitive(False)
+				self.skillCheckBox[n].set_sensitive(False)
+				self.skillLabel += [Gtk.Label("______")]
 				auxBox.pack_start(self.skillCheckBox[n], expand=False, fill=False, padding=0)
-				auxBox.pack_start(self.skillEntry[n], expand=False, fill=False, padding=0)
+				auxBox.pack_start(self.skillLabel[n], expand=False, fill=False, padding=0)
 				auxBox.pack_start(Gtk.Label(at.get_fancy_name()), expand=False, fill=False, padding=0)
 				aux2Box.pack_start(auxBox, expand=False, fill=False, padding=0)
 				n += 1
@@ -400,15 +412,15 @@ class CharSheet:
 		atksplGrid.set_row_spacing(20)
 		atksplGrid.set_column_spacing(20)
 
-		self.atknspells = {"Name": Gtk.Entry(),
-							"ATK Bonus": Gtk.Entry(),
-							"Damage/Type": Gtk.Entry()}
+		self.atknspells = [("Name", Gtk.Entry()),
+							("ATK Bonus", Gtk.Entry()),
+							("Damage/Type", Gtk.Entry())]
 		n = 0
-		for k, v in self.atknspells.items():
+		for att in self.atknspells:
 			auxBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
-			auxBox.pack_start(Gtk.Label(k), expand=False, fill=False, padding=0)
-			auxBox.pack_start(v, expand=True, fill=True, padding=0)
-			if k != "ATK Bonus":
+			auxBox.pack_start(Gtk.Label(att[0]), expand=False, fill=False, padding=0)
+			auxBox.pack_start(att[1], expand=True, fill=True, padding=0)
+			if att[0] != "ATK Bonus":
 				atksplGrid.attach(auxBox, left=n, top=0, width=2, height=1)
 				n += 2
 			else:
