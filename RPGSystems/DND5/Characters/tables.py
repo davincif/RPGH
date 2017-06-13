@@ -98,3 +98,12 @@ def exp_for_level(lvl):
 	elif lvl == 20:
 		return 355000, 6
 	else: return None, None
+
+def mod_by_att(att_point):
+	###
+	# returns the modificator for that atribute
+	###
+	if att_point <= 30:
+		return int(att_point/2) -5
+	else:
+		return 10

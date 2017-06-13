@@ -1,5 +1,5 @@
 #modules
-import RPGSystems.DND5.Characters.expNlevel
+import RPGSystems.DND5.Characters.tables
 
 #packs
 from RPGSystems.DND5.Characters.char import Char

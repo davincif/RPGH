@@ -14,7 +14,7 @@ from RPGSystems.DND5.Enums.attribute import Attribute
 from RPGSystems.DND5.Enums.skill import Skill
 from RPGSystems.DND5.Enums.coin import Coin
 
-from RPGSystems.DND5.Characters.expNlevel import *
+from RPGSystems.DND5.Characters.tables import *
 
 
 class CharSheet:
@@ -32,8 +32,8 @@ class CharSheet:
 	expEntry_id = None #expEntry connect id
 	backEndEntry = None #char backend Entry
 
-	attEntry = [] #attributes' Entry
-	attModEntry = [] #attributes' modificator Entry
+	attDic = {} # {attribute: Entry}
+	attModDic = {} #{att modificator: Entry}
 
 	insp_checkBox = None #Inspiration CheckBox
 	profBonusEntry = None #Proficiency Bonus Entry
@@ -169,6 +169,7 @@ class CharSheet:
 		#Expirience Points
 		expBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 		self.expEntry = Gtk.Entry()
+		self.expEntry.set_max_length(6)
 		self.expEntry.props.xalign = 0.5
 		self.expEntry_id = self.expEntry.connect("changed", self.on_change_lvlNexp)
 		expBox.pack_start(self.expEntry, expand=True, fill=True, padding=0)
@@ -191,13 +192,17 @@ class CharSheet:
 		for at in Attribute:
 			if at != Attribute.NO_ATTRIBUTE:
 				auxBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=base_spacing)
-				self.attEntry += [Gtk.Entry()]
-				self.attEntry[n].set_alignment(xalign=0.5)
-				self.attModEntry += [Gtk.Entry()]
-				self.attModEntry[n].set_sensitive(False)
+				self.attDic[at] = Gtk.Entry()
+				self.attDic[at].set_alignment(xalign=0.5)
+				self.attDic[at].set_max_length(2)
+				self.attDic[at].connect("changed", self.on_att_change, at)
+				self.attModDic[at] = Gtk.Entry()
+				self.attModDic[at].set_alignment(xalign=0.5)
+				self.attModDic[at].set_sensitive(False)
+				self.attModDic[at].set_max_length(3)
 				auxBox.pack_start(Gtk.Label(at.get_fancy_name()), expand=False, fill=False, padding=0)
-				auxBox.pack_start(self.attModEntry[n], expand=True, fill=True, padding=0)
-				auxBox.pack_start(self.attEntry[n], expand=True, fill=True, padding=0)
+				auxBox.pack_start(self.attModDic[at], expand=True, fill=True, padding=0)
+				auxBox.pack_start(self.attDic[at], expand=True, fill=True, padding=0)
 				attBox.pack_start(auxBox, expand=False, fill=False, padding=0)
 				n += 1
 		######ATTRIBUTES######
@@ -504,6 +509,11 @@ class CharSheet:
 
 	#FRONT END
 	def on_name_combo_changed(self, widget):
+		###
+		# capitalize the char and player name
+		# ex.: "leo da vinci" -> "Leo Da Vinci"
+		###
+
 		if self.playerNameEntry == widget:
 			name = widget.get_text()
 			entry = widget
@@ -550,7 +560,7 @@ class CharSheet:
 				level = int(widget.get_text())
 				exp, profBonus = exp_for_level(level)
 				self.expEntry.set_text(str(exp))
-			except ValueError as e:
+			except ValueError:
 				self.levelEntry.set_text("")
 				self.expEntry.set_text("")
 			self.expEntry.handler_unblock(self.expEntry_id)
@@ -560,10 +570,30 @@ class CharSheet:
 				exp = int(widget.get_text())
 				level, profBonus = lvl_for_exp(exp)
 				self.levelEntry.set_text(str(level))
-			except ValueError as e:
+			except ValueError:
 				self.levelEntry.set_text("")
 			self.levelEntry.handler_unblock(self.levelEntry_id)
 
 		#update the proficiency bonus
 		if profBonus is not None:
 			self.profBonusEntry.set_text("+" + str(profBonus))
+
+	def on_att_change(self, widget, attType):
+		###
+		# update all fields affected by the attributes
+		###
+
+		try:
+			att = int(widget.get_text())
+			if att > 30:
+				att = 30
+				widget.set_text("30")
+
+			mod = mod_by_att(att)
+			if mod > 0:
+				mod = "+" + str(mod)
+			else:
+				mod = str(mod)
+			self.attModDic[attType].set_text(mod)
+		except ValueError:
+			widget.set_text("")
