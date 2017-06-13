@@ -31,6 +31,13 @@ class CharSheet:
 	expEntry = None #the char's Expirience Points Entry
 	expEntry_id = None #expEntry connect id
 	backEndEntry = None #char backend Entry
+	sugMaleCB = None #suggestion CheckBox for male names
+	sugFemaleCB = None #suggestion CheckBox for female names
+	sugMaleCB_id = None
+	sugFemaleCB_id = None
+	comboRace = None #race ComboBox
+	comboClass = None #class ComboBox
+	nameStore = None #List of names to suggest ListStore
 
 	attDic = {} # {attribute: Entry}
 	attModDic = {} #{att modificator: Entry}
@@ -96,12 +103,9 @@ class CharSheet:
 		headGrid.set_column_spacing(10)
 
 		#char name box
-		nameStore = Gtk.ListStore(str)
-		nameStore.append(["Name Test"])
-		nameStore.append(["Name Test"])
-
+		self.nameStore = Gtk.ListStore(str)
 		charNameBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
-		self.charComboBox = Gtk.ComboBox.new_with_model_and_entry(nameStore)
+		self.charComboBox = Gtk.ComboBox.new_with_model_and_entry(self.nameStore)
 		self.charComboBox.set_entry_text_column(0)
 		self.charComboBox.connect("changed", self.on_name_combo_changed)
 		charNameBox.pack_start(self.charComboBox, expand=True, fill=True, padding=0)
@@ -109,20 +113,20 @@ class CharSheet:
 
 		#class
 		raceBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
-		comboRace = Gtk.ComboBoxText()
+		self.comboRace = Gtk.ComboBoxText()
 		for i in Classes:
 			if i != Classes.NO_CLASS:
-				comboRace.append_text(i.get_fancy_name())
-		raceBox.pack_start(comboRace, expand=True, fill=True, padding=0)
+				self.comboRace.append_text(i.get_fancy_name())
+		raceBox.pack_start(self.comboRace, expand=True, fill=True, padding=0)
 		raceBox.pack_start(Gtk.Label("Class"), expand=True, fill=False, padding=0)
 
 		#race
 		classBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
-		comboClass = Gtk.ComboBoxText()
+		self.comboClass = Gtk.ComboBoxText()
 		for i in Race:
 			if i != Race.NO_RACE and not i.is_uprace():
-				comboClass.append_text(i.get_fancy_name())
-		classBox.pack_start(comboClass, expand=True, fill=True, padding=0)
+				self.comboClass.append_text(i.get_fancy_name())
+		classBox.pack_start(self.comboClass, expand=True, fill=True, padding=0)
 		classBox.pack_start(Gtk.Label("Race"), expand=True, fill=False, padding=0)
 
 		#player name box
@@ -175,6 +179,19 @@ class CharSheet:
 		expBox.pack_start(self.expEntry, expand=True, fill=True, padding=0)
 		expBox.pack_start(Gtk.Label("Expirience"), expand=True, fill=False, padding=0)
 
+		#Suggest Name
+		sugName = Gtk.Grid()
+		sugName.set_row_spacing(5)
+		sugName.set_column_spacing(5)
+		self.sugMaleCB = Gtk.CheckButton.new_with_label("Male")
+		self.sugMaleCB_id = self.sugMaleCB.connect("toggled", self.on_toggled_suggestion)
+		self.sugFemaleCB = Gtk.CheckButton.new_with_label("Female")
+		self.sugFemaleCB_id = self.sugFemaleCB.connect("toggled", self.on_toggled_suggestion)
+		sugName.attach(Gtk.Label("If you want name suggestion, mark bellow"), left=0, top=0, width=2, height=1)
+		sugName.attach(self.sugMaleCB, left=0, top=1, width=1, height=1)
+		sugName.attach(self.sugFemaleCB, left=1, top=1, width=1, height=1)
+
+
 		headGrid.attach(charNameBox, left=0, top=0, width=2, height=2)
 		headGrid.attach(classBox, left=2, top=0, width=1, height=1)
 		headGrid.attach(raceBox, left=2, top=1, width=1, height=1)
@@ -183,6 +200,7 @@ class CharSheet:
 		headGrid.attach(AligmentBox, left=4, top=0, width=1, height=1)
 		headGrid.attach(backEndBox, left=4, top=1, width=1, height=1)
 		headGrid.attach(playerNameBox, left=5, top=0, width=2, height=2)
+		headGrid.attach(sugName, left=7, top=0, width=1, height=2)
 		######HEAD######
 
 		######ATTRIBUTES######
@@ -597,3 +615,30 @@ class CharSheet:
 			self.attModDic[attType].set_text(mod)
 		except ValueError:
 			widget.set_text("")
+
+	def on_toggled_suggestion(self, widget):
+		###
+		# add the suggestion name to the character based on the race
+		###
+
+		if widget == self.sugMaleCB:
+			#suggest male names
+			self.sugFemaleCB.handler_block(self.sugFemaleCB_id)
+
+			self.sugFemaleCB.set_active(False)
+
+			# self.nameStore.clear()
+			# tree_iter = self.comboRace.get_active_iter()
+			# model = self.comboRace.get_model()
+			# name = model[tree_iter][0]
+			# comboRace
+			# [self.nameStore.append([elem]) for elem in suggest_name(Race())]
+			
+			self.sugFemaleCB.handler_unblock(self.sugFemaleCB_id)
+		elif widget == self.sugFemaleCB:
+			#suggest famale names
+			self.sugMaleCB.handler_block(self.sugMaleCB_id)
+
+			self.sugMaleCB.set_active(False)
+
+			self.sugMaleCB.handler_unblock(self.sugMaleCB_id)

@@ -1,3 +1,6 @@
+from RPGSystems.DND5.Enums.race import Race
+
+
 def lvl_for_exp(exp):
 	###
 	# return the level and prificiency bonus that
@@ -107,3 +110,34 @@ def mod_by_att(att_point):
 		return int(att_point/2) -5
 	else:
 		return 10
+
+def suggest_name(race, sex):
+	###
+	# receive ther race and the string "male", "female" or "clan"
+	# and returns a list with commum names for this race and sex
+	# or an empty list if there's anything to suggest
+	###
+
+	namelist = None
+
+	if race.get_uprace == Race.DWARF:
+		#suggest names for dwarfs
+		if sex == "male":
+			namelist = ["Adrik", "Alberich", "Baer", "Barendd", "Brottor", "Dain",
+						"Darrak", "Eberk", "Einkil", "Fargrim", "Gardain", "Harbek",
+						"Kildrak", "Morgran", "Orsik", "Oskar", "Rangrim", "Rurik",
+						"Taklinn", "Thoradin", "Thorin", "Tordek", "Traubon", "Travok",
+						"Ulfgar", "Veit", "Vondal"]
+		elif sex == "female":
+			namelist = ["Artin", "Audhild", "Bardryn", "Dagnal", "Diesa", "Eldeth",
+						"Falkrunn", "Gunnloda", "Gurdis", "Helja", "Hlin", "Kathra",
+						"Kristryd", "Ilde", "Liftrasa", "Mardred", "Riswynn", "Sannl",
+						"Torbera", "Torgga", "Vistra"]
+		elif sex == "clan":
+			namelist = ["Balderk", "Dankil", "Gorunn", "Holderhek", "Loderr", "Lutgehr",
+						"Rumnaheim", "Strakeln", "Torunn", "Ungart"]
+
+	if namelist is None:
+		return []
+	else:
+		return namelist
