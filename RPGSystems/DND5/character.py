@@ -9,7 +9,7 @@ from RPGSystems.DND5.Enums.diceType import DiceType
 from RPGSystems.DND5.Bag.coinBag import CoinBag
 
 
-class Char:
+class Character:
 
 	#player info (if it is a player)
 	is_player = False

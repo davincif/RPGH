@@ -7,14 +7,14 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GdkPixbuf
 
 #Internal Imports
+from RPGSystems.DND5.tables import *
+
 from RPGSystems.DND5.Enums.classes import Classes
 from RPGSystems.DND5.Enums.race import Race
 from RPGSystems.DND5.Enums.personality import Personality
 from RPGSystems.DND5.Enums.attribute import Attribute
 from RPGSystems.DND5.Enums.skill import Skill
 from RPGSystems.DND5.Enums.coin import Coin
-
-from RPGSystems.DND5.Characters.tables import *
 
 
 class CharSheet:
