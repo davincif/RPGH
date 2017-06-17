@@ -88,16 +88,42 @@ class Race(Enum):
 			return "rock gnome"
 
 	def get_uprace(self):
+		###
+		# return the uprace of the given race
+		# or itself if it already is an uprace
+		###
+
 		if self == self.NO_RACE:
 			return self.NO_RACE
 		else:
 			return Race(int(self.value / 50)*50)
 
 	def is_uprace(self):
+		###
+		# return whether a classe is uprace or not, but...
+		# ATTETION: a classe can be uprace and subrace at the same type, eg.: humans, halforcs.
+		# so, (not is_uprace()) may be differente from (is_subrace())
+		###
+
 		if int(self.value / 50)*50 == self.value:
 			return True
 		else:
 			return False
+
+	def is_subrace(self):
+		###
+		# return whether a classe is subrace or not, but...
+		# ATTETION: a classe can be uprace and subrace at the same type, eg.: humans, halforcs.
+		# so, (not is_uprace()) may be differente from (is_subrace())
+		###
+
+		uprace_value = int(self.value / 50)*50
+		if uprace_value != self.value:
+			return True
+		elif any(uprace_value+1 == item.value for item in Race):
+			return False
+		else:
+			return True
 
 	def comum_name_type(self):
 		###
@@ -105,27 +131,33 @@ class Race(Enum):
 		# dwarfs have male and female names, while elfs have name for child too.
 		###
 
-		typelist = []
+		typelist = None
+		race = self.get_uprace()
 		
 		if race == Race.ELF:
-			typelist = ["child", "male", "female", "family", "family translation"]
+			typelist = [["child", "male", "female"], ["family", "family translation"]]
 		elif race == Race.DWARF:
-			typelist = ["male", "female", "clan"]
+			typelist = [["male", "female"], ["clan"]]
 		elif race == Race.HALFLING:
-			typelist = ["male", "female", "family"]
+			typelist = [["male", "female"], ["family"]]
 		elif race == Race.HALFELF:
 			pass
 		elif race == Race.HALFORC:
-			typelist = ["male", "famale"]
+			typelist = [["male", "female"]]
 		elif race == Race.TIEFLING:
-			typelist = ["male", "famale", "virtue"]
+			typelist = [["male", "famale"], ["virtue"]]
 		elif race == Race.HUMAN:
 			typelist = [["male", "female", "surname"], ["calishite", "chondathan",
 						"damaran", "illuskan", "mulan", "rashemi","shou", "tethyrian", "turami"]]
 		elif race == Race.DRAGONBORN:
-			typelist = ["childhood", "male", "famale", "clan"]
+			typelist = [["childhood", "male", "famale"], ["clan"]]
 		elif race == Race.GNOME:
-			typelist = ["male", "female", "clan", "nickname"]
+			typelist = [["male", "female", "nickname"], ["clan"]]
+
+		if typelist is None:
+			return []
+		else:
+			return typelist
 
 	def suggest_name(self, nametype):
 		###
@@ -138,7 +170,7 @@ class Race(Enum):
 		race = self.get_uprace()
 
 		if race == Race.ELF:
-			if nametype == "chile":
+			if nametype == "child":
 				namelist = ["Ara", "Bryn", "Del", "Eryn", "Faen", "Innil", "Lael",
 							"Mella", "Naill", "Naeris", "Phann", "Rael", "Rinn",
 							"Sai", "Syllin", "Thia", "Vall"]
